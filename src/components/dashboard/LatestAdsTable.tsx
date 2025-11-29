@@ -2,6 +2,14 @@
 import Image from "next/image";
 import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
+import { Eye, Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 type AdRow = {
   id: number;
@@ -37,6 +45,11 @@ const badgeClass = (status: AdRow["status"]) => {
 export default function LatestAdsTable() {
   const columns: ColumnDef<AdRow>[] = [
     {
+      accessorKey: "index",
+      header: "Index",
+      cell: ({ row }) => row.index + 1,
+    },
+    {
       accessorKey: "photo",
       header: "Photo",
       cell: ({ row }) => (
@@ -62,12 +75,41 @@ export default function LatestAdsTable() {
       },
     },
     { accessorKey: "date", header: "Date" },
+    {
+      id: "actions",
+      header: "Action",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => console.log("view", row.original.id)}>
+              <Eye className="mr-2 h-4 w-4" />
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => console.log("edit", row.original.id)}>
+              <Pencil className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => console.log("delete", row.original.id)} className="text-destructive">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+      enableSorting: false,
+    },
   ];
 
   return (
     <div className="bg-card text-card-foreground rounded-lg shadow-sm p-4">
       <h2 className="text-lg font-semibold mb-3">Latest Ads</h2>
-      <DataTable columns={columns} data={rows} />
+      <DataTable columns={columns} data={rows} pageSize={5} />
     </div>
   );
 }

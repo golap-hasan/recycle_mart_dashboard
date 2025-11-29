@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/incompatible-library */
 "use client";
 
 import * as React from "react";
@@ -12,16 +13,19 @@ import {
 } from "@tanstack/react-table";
 
 import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   className?: string;
+  pageSize?: number;
 }
 
-export function DataTable<TData, TValue>({ columns, data, className }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, className, pageSize = 10 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-
+  
   const table = useReactTable({
     data,
     columns,
@@ -30,6 +34,9 @@ export function DataTable<TData, TValue>({ columns, data, className }: DataTable
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: { pageSize },
+    },
   });
 
   return (
@@ -77,25 +84,42 @@ export function DataTable<TData, TValue>({ columns, data, className }: DataTable
         </tbody>
       </table>
 
-      <div className="flex items-center justify-between p-3">
+      <div className="flex items-center justify-between p-3 gap-3 flex-wrap">
         <div className="text-xs text-muted-foreground">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
-        <div className="space-x-2">
-          <button
-            className="px-3 py-1 rounded border text-sm disabled:opacity-50"
+        <div className="ml-auto flex items-center gap-2">
+          <label className="text-xs text-muted-foreground">Rows:</label>
+          <Select
+            value={String(table.getState().pagination.pageSize)}
+            onValueChange={(v) => table.setPageSize(Number(v))}
+          >
+            <SelectTrigger size="sm">
+              <SelectValue placeholder="Rows" />
+            </SelectTrigger>
+            <SelectContent>
+              {[5, 10, 20, 50].map((n) => (
+                <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="w-px h-5 bg-border" />
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
             Previous
-          </button>
-          <button
-            className="px-3 py-1 rounded border text-sm disabled:opacity-50"
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             Next
-          </button>
+          </Button>
         </div>
       </div>
     </div>

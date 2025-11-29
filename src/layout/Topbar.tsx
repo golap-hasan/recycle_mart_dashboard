@@ -9,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useTheme } from "next-themes";
 import {
   PanelLeft,
   UserCircle,
@@ -17,22 +16,18 @@ import {
   CreditCard,
   Users,
   LogOut,
-  Sun,
-  Moon,
 } from "lucide-react";
 
 import MobileSidebar from "./MobileSidebar";
+import ThemeToggle from "@/providers/ThemeToggle";
 
 interface TopbarProps {
   onToggleSidebar: () => void;
 }
 
 export default function Topbar({ onToggleSidebar }: TopbarProps) {
-  const { theme, setTheme } = useTheme();
-  const isDark = theme === "dark";
-
   return (
-    <header className="h-16 bg-background border-b border-border flex items-center px-4 justify-between">
+    <header className="h-20 bg-background border-b border-border flex items-center px-4 justify-between">
       {/* Left Section - Menu Toggle */}
       <div className="flex items-center gap-4">
         <MobileSidebar />
@@ -49,28 +44,16 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
       {/* Right Section - Theme Switcher & User Menu */}
       <div className="flex items-center gap-4">
         {/* Theme Toggle Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
-          onClick={() => setTheme(isDark ? "light" : "dark")}
-        >
-          {isDark ? (
-            <Sun className="w-5 h-5" />
-          ) : (
-            <Moon className="w-5 h-5" />
-          )}
-        </Button>
+        <ThemeToggle />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="relative h-10 w-10 rounded-full"
-            >
+            <Button variant="ghost" className="relative h-10 w-10 rounded-full">
               <Avatar className="h-10 w-10">
                 <AvatarImage src="" alt="John Doe" />
-                <AvatarFallback className="bg-muted text-muted-foreground">JD</AvatarFallback>
+                <AvatarFallback className="bg-muted text-muted-foreground">
+                  JD
+                </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -83,7 +66,9 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
             <div className="flex items-center gap-3 p-3">
               <Avatar className="h-10 w-10">
                 <AvatarImage src="" alt="John Doe" />
-                <AvatarFallback className="bg-muted text-muted-foreground">JD</AvatarFallback>
+                <AvatarFallback className="bg-muted text-muted-foreground">
+                  JD
+                </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
                 <p className="text-sm font-medium text-foreground">John Doe</p>

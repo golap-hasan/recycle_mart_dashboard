@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function RootLayoutClient({
   children,
@@ -16,7 +17,6 @@ export default function RootLayoutClient({
       {/* Sidebar */}
       <Sidebar 
         isCollapsed={isSidebarCollapsed}
-        setIsCollapsed={setIsSidebarCollapsed}
       />
       
       {/* Main Content Area */}
@@ -27,9 +27,9 @@ export default function RootLayoutClient({
         />
         
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <ScrollArea className="flex-1 h-[calc(100vh-80px)] p-4">
           {children}
-        </main>
+        </ScrollArea>
       </div>
     </div>
   );
