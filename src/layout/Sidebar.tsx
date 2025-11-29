@@ -105,14 +105,14 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
         <div className="flex items-center justify-between p-4 h-16">
           {!isCollapsed && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Asterisk className="w-5 h-5 text-background" />
               </div>
               <span className="text-foreground font-semibold text-lg">Analytics</span>
             </div>
           )}
           {isCollapsed && (
-            <div className="w-8 h-8 bg-foreground rounded-lg flex items-center justify-center mx-auto">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mx-auto">
               <Asterisk className="w-5 h-5 text-background" />
             </div>
           )}
