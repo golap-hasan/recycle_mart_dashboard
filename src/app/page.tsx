@@ -1,8 +1,9 @@
+import DashboardOverview from "@/components/dashboard/DashboardOverview";
 
 export default function Home() {
   return (
-   <div>
-    dashboard
-   </div>
+   <main>
+    <DashboardOverview />
+   </main>
   );
 }
