@@ -49,7 +49,7 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="text-muted-foreground hover:text-foreground hover:bg-muted"
+          className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
           onClick={() => setTheme(isDark ? "light" : "dark")}
         >
           {isDark ? (

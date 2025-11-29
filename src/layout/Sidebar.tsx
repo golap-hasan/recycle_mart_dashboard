@@ -11,26 +11,29 @@ import {
 import {
   LayoutDashboard,
   Users,
-  UserCircle,
-  TrendingUp,
-  BarChart3,
-  FileText,
-  AlertTriangle,
-  ClipboardList,
-  LogOut,
-  Download,
-  Link2,
+  Megaphone,
+  Layers,
+  MapPin,
+  CreditCard,
+  Headphones,
+  Image,
+  ShieldAlert,
+  Ticket,
   ChevronRight,
   Asterisk,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface MenuItem {
   icon: React.ElementType;
   label: string;
+  href: string;
   badge?: string;
   expandable?: boolean;
-  children?: { label: string }[];
+  children?: { label: string; href: string }[];
 }
 
 interface MenuGroup {
@@ -40,58 +43,43 @@ interface MenuGroup {
 
 const menuGroups: MenuGroup[] = [
   {
-    title: "Core Pages",
+    title: "Admin Management",
     items: [
-      { icon: LayoutDashboard, label: "Dashboard" },
-      { icon: UserCircle, label: "User Behavior" },
-      { icon: Users, label: "Audience" },
-      { icon: TrendingUp, label: "Traffic Sources" },
-      { icon: BarChart3, label: "Engagement Metrics" },
-      { 
-        icon: FileText, 
-        label: "Custom Reports", 
-        expandable: true,
-        children: [
-          { label: "Sales Report" },
-          { label: "User Report" },
-          { label: "Revenue Report" },
-        ]
-      },
-      { icon: AlertTriangle, label: "Error Logs" },
-      { icon: ClipboardList, label: "Survey Results" },
+      { icon: LayoutDashboard, label: "Dashboard", href: "/" },
+      { icon: Users, label: "User Management", href: "/users" },
+      { icon: Megaphone, label: "Ads Management", href: "/ads" },
+      { icon: Layers, label: "Category & Subcategory", href: "/categories" },
+      { icon: MapPin, label: "Locations", href: "/locations" },
+      { icon: CreditCard, label: "Packages / Plans", href: "/packages" },
     ],
   },
   {
-    title: "Visualization",
+    title: "System Configuration",
     items: [
-      { icon: Download, label: "Data Export" },
-      { 
-        icon: Link2, 
-        label: "Integrations", 
-        expandable: true,
-        children: [
-          { label: "API Integrations" },
-          { label: "Third-party Apps" },
-          { label: "Webhooks" },
-        ]
-      },
+      { icon: Headphones, label: "Support Management", href: "/support" },
+      { icon: Image, label: "Content Management", href: "/content" },
+      { icon: ShieldAlert, label: "Admin & Roles", href: "/roles" },
+      { icon: Ticket, label: "Marketing Tools", href: "/marketing" },
     ],
   },
 ];
 
 interface SidebarProps {
   isCollapsed: boolean;
-  setIsCollapsed: (collapsed: boolean) => void;
 }
 
 export default function Sidebar({ isCollapsed }: SidebarProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const toggleExpand = (label: string) => {
     setExpandedItems((prev) =>
       prev.includes(label) ? prev.filter((item) => item !== label) : [...prev, label]
     );
   };
+
+  const isActive = (href: string) => pathname === href;
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -134,16 +122,26 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                 {group.items.map((item, itemIndex) => {
                   const Icon = item.icon;
                   const isExpanded = expandedItems.includes(item.label);
+                  const active = isActive(item.href);
                   
                   const menuButton = (
                     <Button
                       key={itemIndex}
                       variant="ghost"
                       className={cn(
-                        "w-full justify-start text-muted-foreground hover:text-foreground hover:bg-muted transition-colors",
+                        "w-full justify-start transition-colors",
+                        active 
+                          ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary" 
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted",
                         isCollapsed ? "px-0 justify-center" : "px-3"
                       )}
-                      onClick={() => item.expandable && toggleExpand(item.label)}
+                      onClick={() => {
+                        if (item.expandable) {
+                          toggleExpand(item.label);
+                        } else {
+                          router.push(item.href);
+                        }
+                      }}
                     >
                       <Icon className={cn("w-4 h-4", !isCollapsed && "mr-3")} />
                       {!isCollapsed && (
@@ -181,13 +179,19 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                       {item.children && isExpanded && (
                         <div className="ml-9 mt-1 space-y-1">
                           {item.children.map((child, childIndex) => (
-                            <Button
-                              key={childIndex}
-                              variant="ghost"
-                              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-muted text-sm px-3 py-1 h-8"
-                            >
-                              {child.label}
-                            </Button>
+                            <Link href={child.href} key={childIndex} className="block">
+                              <Button
+                                variant="ghost"
+                                className={cn(
+                                  "w-full justify-start text-sm px-3 py-1 h-8",
+                                  isActive(child.href)
+                                    ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                )}
+                              >
+                                {child.label}
+                              </Button>
+                            </Link>
                           ))}
                         </div>
                       )}

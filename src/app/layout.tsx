@@ -1,13 +1,14 @@
 "use client";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import RootLayoutClient from "@/layout/MainLayout";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -25,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} ${geistMono.variable} antialiased font-sans`}
       >
         <ThemeProvider
           attribute="class" 
