@@ -85,7 +85,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          "relative h-screen bg-background border-r border-border transition-all duration-300 flex flex-col overflow-hidden",
+          "relative h-screen bg-background border-r border-border transition-all duration-300 hidden md:flex flex-col overflow-hidden",
           isCollapsed ? "w-16" : "w-64"
         )}
       >

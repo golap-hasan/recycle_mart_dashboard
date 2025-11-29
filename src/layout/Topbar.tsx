@@ -21,6 +21,8 @@ import {
   Moon,
 } from "lucide-react";
 
+import MobileSidebar from "./MobileSidebar";
+
 interface TopbarProps {
   onToggleSidebar: () => void;
 }
@@ -33,10 +35,11 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
     <header className="h-16 bg-background border-b border-border flex items-center px-4 justify-between">
       {/* Left Section - Menu Toggle */}
       <div className="flex items-center gap-4">
+        <MobileSidebar />
         <Button
           variant="ghost"
           size="icon"
-          className="text-muted-foreground hover:text-foreground hover:bg-muted"
+          className="hidden md:flex text-muted-foreground hover:text-foreground hover:bg-muted"
           onClick={onToggleSidebar}
         >
           <PanelLeft className="w-5 h-5" />
