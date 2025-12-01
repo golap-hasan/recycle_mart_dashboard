@@ -1,5 +1,6 @@
 import { DataTable } from "@/components/ui/data-table";
 import { supportColumns, type Ticket } from "@/components/support/columns";
+import PageHeader from "@/components/ui/page-header";
 
 // Mock support tickets (Bikroy.com style)
 const mockTickets: Ticket[] = [
@@ -84,17 +85,21 @@ const mockTickets: Ticket[] = [
     assignedTo: "Tech Support",
   },
 ];
+const meta = {
+  total: mockTickets.length,
+  page: 1,
+  limit: 10,
+  totalPages: 1,
+};
 
-export default function SupportPage() {
+export default async function SupportPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold mb-2">Support Management</h1>
-        <p className="text-muted-foreground">
-          Handle customer support tickets and inquiries.
-        </p>
-      </div>
-      <DataTable columns={supportColumns} data={mockTickets} />
+      <PageHeader
+        title="Support Management"
+        description="Handle customer support tickets and inquiries."
+      />
+      <DataTable columns={supportColumns} data={mockTickets} meta={meta} />
     </div>
   );
 }

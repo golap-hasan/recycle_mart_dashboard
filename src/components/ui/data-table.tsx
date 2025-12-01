@@ -11,6 +11,7 @@ import {
   SortingState,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 import {
   Table,
@@ -43,20 +44,51 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   pageSize?: number;
+  meta?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages?: number;
+  };
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   pageSize = 10,
+  meta,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Handle server-side pagination URL updates
+  const handlePageChange = (page: number) => {
+    if (meta) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", page.toString());
+      router.push(`${pathname}?${params.toString()}`);
+    }
+  };
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
-    state: { sorting },
+    pageCount: meta 
+      ? (meta.totalPages ?? Math.ceil(meta.total / meta.limit)) 
+      : undefined,
+    state: {
+      sorting,
+      ...(meta && {
+        pagination: {
+          pageIndex: meta.page - 1,
+          pageSize: meta.limit,
+        },
+      }),
+    },
+    manualPagination: !!meta,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -147,8 +179,18 @@ export function DataTable<TData, TValue>({
       {/* Pagination Controls */}
       <div className="flex items-center justify-between px-2">
         <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {meta ? (
+            <>
+              Showing {(meta.page - 1) * meta.limit + 1} to{" "}
+              {Math.min(meta.page * meta.limit, meta.total)} of {meta.total}{" "}
+              entries
+            </>
+          ) : (
+            <>
+              {table.getFilteredSelectedRowModel().rows.length} of{" "}
+              {table.getFilteredRowModel().rows.length} row(s) selected.
+            </>
+          )}
         </div>
         <Pagination>
           <PaginationContent>
@@ -156,7 +198,11 @@ export function DataTable<TData, TValue>({
               <PaginationPrevious
                 onClick={(e) => {
                   e.preventDefault();
-                  table.previousPage();
+                  if (meta) {
+                    if (meta.page > 1) handlePageChange(meta.page - 1);
+                  } else {
+                    table.previousPage();
+                  }
                 }}
                 className={cn(
                   "rounded-full cursor-pointer",
@@ -218,7 +264,11 @@ export function DataTable<TData, TValue>({
                     <PaginationLink
                       onClick={(e) => {
                         e.preventDefault();
-                        table.setPageIndex(pageNum - 1);
+                        if (meta) {
+                          handlePageChange(pageNum);
+                        } else {
+                          table.setPageIndex(pageNum - 1);
+                        }
                       }}
                       isActive={isActive}
                       className="rounded-full cursor-pointer"
@@ -234,7 +284,13 @@ export function DataTable<TData, TValue>({
               <PaginationNext
                 onClick={(e) => {
                   e.preventDefault();
-                  table.nextPage();
+                  if (meta) {
+                    const totalPages = meta.totalPages ?? Math.ceil(meta.total / meta.limit);
+                    if (meta.page < totalPages)
+                      handlePageChange(meta.page + 1);
+                  } else {
+                    table.nextPage();
+                  }
                 }}
                 className={cn(
                   "rounded-full cursor-pointer",

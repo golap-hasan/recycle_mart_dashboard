@@ -13,8 +13,6 @@ import {
   PanelLeft,
   UserCircle,
   Settings,
-  CreditCard,
-  Users,
   LogOut,
 } from "lucide-react";
 
@@ -87,16 +85,6 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
             <DropdownMenuItem className="text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem className="text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer">
-              <CreditCard className="mr-2 h-4 w-4" />
-              <span>Billing</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem className="text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer">
-              <Users className="mr-2 h-4 w-4" />
-              <span>Manage Team</span>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator className="bg-border" />

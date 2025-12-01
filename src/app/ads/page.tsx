@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/ui/data-table";
 import { adsColumns, type Ad } from "@/components/ads/columns";
+import PageHeader from "@/components/ui/page-header";
 
-// Mock ads data (Bikroy.com style classified ads)
 const mockAds: Ad[] = [
   {
     id: "1",
@@ -100,17 +100,21 @@ const mockAds: Ad[] = [
     views: 789,
   },
 ];
+const meta = {
+  total: mockAds.length,
+  page: 1,
+  limit: 10,
+  totalPages: 1,
+};
 
-export default function AdsPage() {
+export default async function AdsPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold mb-2">Ads Management</h1>
-        <p className="text-muted-foreground">
-          Review, approve, and manage classified advertisements.
-        </p>
-      </div>
-      <DataTable columns={adsColumns} data={mockAds} />
+      <PageHeader
+        title="Ads Management"
+        description="Review, approve, and manage classified advertisements."
+      />
+      <DataTable columns={adsColumns} data={mockAds} meta={meta} />
     </div>
   );
 }

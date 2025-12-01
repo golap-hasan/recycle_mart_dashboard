@@ -1,5 +1,9 @@
 import { DataTable } from "@/components/ui/data-table";
-import { locationsColumns, type Location } from "@/components/locations/columns";
+import {
+  locationsColumns,
+  type Location,
+} from "@/components/locations/columns";
+import PageHeader from "@/components/ui/page-header";
 
 // Mock location data (Bangladesh locations - Bikroy.com style)
 const mockLocations: Location[] = [
@@ -76,17 +80,20 @@ const mockLocations: Location[] = [
     status: "inactive",
   },
 ];
-
-export default function LocationsPage() {
+const meta = {
+  total: mockLocations.length,
+  page: 1,
+  limit: 10,
+  totalPages: 1,
+};  
+export default async function LocationsPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold mb-2">Locations Management</h1>
-        <p className="text-muted-foreground">
-          Manage regions, cities, and areas across Bangladesh.
-        </p>
-      </div>
-      <DataTable columns={locationsColumns} data={mockLocations} />
+      <PageHeader
+        title="Locations Management"
+        description="Manage regions, cities, and areas across Bangladesh."
+      />
+      <DataTable columns={locationsColumns} data={mockLocations} meta={meta} />
     </div>
   );
 }

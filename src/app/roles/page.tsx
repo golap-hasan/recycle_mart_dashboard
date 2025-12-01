@@ -1,5 +1,6 @@
 import { DataTable } from "@/components/ui/data-table";
 import { rolesColumns, type Role } from "@/components/roles/columns";
+import PageHeader from "@/components/ui/page-header";
 
 // Mock roles data (Bikroy.com admin roles)
 const mockRoles: Role[] = [
@@ -54,17 +55,21 @@ const mockRoles: Role[] = [
     createdDate: "2023-04-05",
   },
 ];
+const meta = {
+  total: mockRoles.length,
+  page: 1,
+  limit: 10,
+  totalPages: 1,
+};
 
-export default function RolesPage() {
+export default async function RolesPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold mb-2">Admin & Role Management</h1>
-        <p className="text-muted-foreground">
-          Configure admin access levels and role-based permissions.
-        </p>
-      </div>
-      <DataTable columns={rolesColumns} data={mockRoles} />
+      <PageHeader
+        title="Admin & Role Management"
+        description="Configure admin access levels and role-based permissions."
+      />
+      <DataTable columns={rolesColumns} data={mockRoles} meta={meta} />
     </div>
   );
 }

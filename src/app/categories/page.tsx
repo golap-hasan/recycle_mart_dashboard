@@ -1,5 +1,9 @@
 import { DataTable } from "@/components/ui/data-table";
-import { categoriesColumns, type Category } from "@/components/categories/columns";
+import {
+  categoriesColumns,
+  type Category,
+} from "@/components/categories/columns";
+import PageHeader from "@/components/ui/page-header";
 
 // Mock category data (Bikroy.com style)
 const mockCategories: Category[] = [
@@ -76,17 +80,25 @@ const mockCategories: Category[] = [
     createdDate: "2023-04-01",
   },
 ];
+const meta = {
+  total: mockCategories.length,
+  page: 1,
+  limit: 10,
+  totalPages: 1,
+};
 
-export default function CategoriesPage() {
+export default async function CategoriesPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold mb-2">Category & Subcategory</h1>
-        <p className="text-muted-foreground">
-          Manage product categories and subcategories structure.
-        </p>
-      </div>
-      <DataTable columns={categoriesColumns} data={mockCategories} />
+      <PageHeader
+        title="Category & Subcategory"
+        description="Manage product categories and subcategories structure."
+      />
+      <DataTable
+        columns={categoriesColumns}
+        data={mockCategories}
+        meta={meta}
+      />
     </div>
   );
 }

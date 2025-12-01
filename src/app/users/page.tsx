@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/ui/data-table";
+import PageHeader from "@/components/ui/page-header";
 import { usersColumns, type User } from "@/components/users/columns";
 
 // Fake user data
@@ -49,17 +50,21 @@ const mockUsers: User[] = [
     avatar: "",
   },
 ];
+const meta = {
+  total: mockUsers.length,
+  page: 1,
+  limit: 10,
+  totalPages: 1,
+};
 
-export default function UsersPage() {
+export default async function UsersPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold mb-2">User Management</h1>
-        <p className="text-muted-foreground">
-          Manage users, roles, and permissions here.
-        </p>
-      </div>
-      <DataTable columns={usersColumns} data={mockUsers} />
+      <PageHeader
+        title="User Management"
+        description="Manage users, roles, and permissions here."
+      />
+      <DataTable columns={usersColumns} data={mockUsers} meta={meta} />
     </div>
   );
 }
