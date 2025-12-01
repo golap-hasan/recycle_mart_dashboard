@@ -46,7 +46,7 @@ export default function LatestAdsTable() {
   const columns: ColumnDef<AdRow>[] = [
     {
       accessorKey: "index",
-      header: "Index",
+      header: "S.L",
       cell: ({ row }) => row.index + 1,
     },
     {
