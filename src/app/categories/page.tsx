@@ -79,7 +79,7 @@ const mockCategories: Category[] = [
 
 export default function CategoriesPage() {
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold mb-2">Category & Subcategory</h1>
         <p className="text-muted-foreground">
