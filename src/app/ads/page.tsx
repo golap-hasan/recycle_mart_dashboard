@@ -99,12 +99,36 @@ const mockAds: Ad[] = [
     postedDate: "2024-10-15",
     views: 789,
   },
+  {
+    id: "9",
+    title: "Gaming PC - RTX 4070 Ti",
+    seller: "Nahid Rahman",
+    category: "Electronics",
+    location: "Banani, Dhaka",
+    price: 185000,
+    condition: "Refurbished",
+    status: "approved",
+    postedDate: "2024-11-24",
+    views: 523,
+  },
+  {
+    id: "10",
+    title: "Commercial Space for Rent - Gulshan",
+    seller: "Rashed Properties",
+    category: "Property",
+    location: "Gulshan, Dhaka",
+    price: 125000,
+    condition: "Used",
+    status: "expired",
+    postedDate: "2024-10-15",
+    views: 789,
+  },
 ];
 const meta = {
   total: mockAds.length,
   page: 1,
   limit: 10,
-  totalPages: 1,
+  totalPages: 5,
 };
 
 export default async function AdsPage() {

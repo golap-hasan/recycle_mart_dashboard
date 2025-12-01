@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Badge } from "../ui/badge";
 
 type AdRow = {
   id: number;
@@ -63,7 +64,7 @@ export default function LatestAdsTable() {
       accessorKey: "category",
       header: "Category",
       cell: ({ getValue }) => (
-        <span className="inline-flex px-2 py-1 rounded bg-blue-100 text-blue-700">{String(getValue())}</span>
+        <Badge className="inline-flex rounded bg-blue-100 text-blue-700">{String(getValue())}</Badge>
       ),
     },
     {
@@ -71,7 +72,7 @@ export default function LatestAdsTable() {
       header: "Status",
       cell: ({ getValue }) => {
         const v = getValue() as AdRow["status"]; 
-        return <span className={`inline-flex px-2 py-1 rounded ${badgeClass(v)}`}>{v}</span>;
+        return <Badge className={`inline-flex rounded ${badgeClass(v)}`}>{v}</Badge>;
       },
     },
     { accessorKey: "date", header: "Date" },

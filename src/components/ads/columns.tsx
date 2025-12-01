@@ -10,7 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Trash2, Eye, CheckCircle, XCircle, Star } from "lucide-react";
+import { MoreVertical, Trash2, CheckCircle, XCircle, Star } from "lucide-react";
+import AdDetailsDialog from "./AdDetailsDialog";
 
 export interface Ad {
   id: string;
@@ -70,8 +71,7 @@ export const adsColumns: ColumnDef<Ad>[] = [
       const condition = row.getValue("condition") as string;
       return (
         <Badge
-          variant={condition === "New" ? "default" : "secondary"}
-          className="capitalize"
+           onClick={() => {}}className="capitalize"
         >
           {condition}
         </Badge>
@@ -101,58 +101,54 @@ export const adsColumns: ColumnDef<Ad>[] = [
       );
     },
   },
-  {
-    accessorKey: "views",
-    header: "Views",
-    cell: ({ row }) => (
-      <span className="text-muted-foreground">
-        {row.getValue("views")} views
-      </span>
-    ),
-  },
+  // {
+  //   accessorKey: "views",
+  //   header: "Views",
+  //   cell: ({ row }) => (
+  //     <span className="text-muted-foreground">
+  //       {row.getValue("views")} views
+  //     </span>
+  //   ),
+  // },
   {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
-    cell: ({ row }) => {
-      const ad = row.original;
-      return (
-        <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Eye className="mr-2 h-4 w-4" />
-                View Details
-              </DropdownMenuItem>
-              {ad.status === "pending" && (
-                <>
-                  <DropdownMenuItem>
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    Approve Ad
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <XCircle className="mr-2 h-4 w-4" />
-                    Reject Ad
-                  </DropdownMenuItem>
-                </>
-              )}
-              <DropdownMenuItem>
-                <Star className="mr-2 h-4 w-4" />
-                Feature Ad
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete Ad
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <MoreVertical/>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <AdDetailsDialog ad={row.original} />
+            </DropdownMenuItem>
+            {row.original.status === "pending" && (
+              <>
+                <DropdownMenuItem>
+                  <CheckCircle />
+                  Approve Ad
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <XCircle />
+                  Reject Ad
+                </DropdownMenuItem>
+              </>
+            )}
+            <DropdownMenuItem>
+              <Star  />
+              Feature Ad
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-destructive">
+              <Trash2 />
+              Delete Ad
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    ),
   },
 ];
