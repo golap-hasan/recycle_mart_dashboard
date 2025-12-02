@@ -72,8 +72,8 @@ export default function LotteryManagement() {
        <PageHeader title="Lottery Management" description="Create and manage your lottery campaigns."/>
         <Sheet>
           <SheetTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" /> Create Lottery
+            <Button size="sm">
+              <Plus /> Create Lottery
             </Button>
           </SheetTrigger>
           <SheetContent className="overflow-y-auto">

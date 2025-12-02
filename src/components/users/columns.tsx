@@ -18,9 +18,17 @@ export interface User {
   email: string;
   role: string;
   status: "active" | "inactive" | "banned";
+  package: "free" | "basic" | "pro" | "premium";
   joinedDate: string;
   avatar?: string;
 }
+
+const packageDetails = {
+  free: { name: "Free", ads: 6, variant: "outline" as const },
+  basic: { name: "Basic", ads: 10, variant: "secondary" as const },
+  pro: { name: "Pro", ads: 15, variant: "default" as const },
+  premium: { name: "Premium", ads: 20, variant: "default" as const },
+};
 
 export const usersColumns: ColumnDef<User>[] = [
   {
@@ -33,7 +41,10 @@ export const usersColumns: ColumnDef<User>[] = [
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.avatar} alt={user.name} />
             <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-              {user.name.split(" ").map((n) => n[0]).join("")}
+              {user.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
             </AvatarFallback>
           </Avatar>
           <span className="font-medium">{user.name}</span>
@@ -49,13 +60,17 @@ export const usersColumns: ColumnDef<User>[] = [
     ),
   },
   {
-    accessorKey: "role",
-    header: "Role",
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="capitalize">
-        {row.getValue("role")}
-      </Badge>
-    ),
+    accessorKey: "package",
+    header: "Package",
+    cell: ({ row }) => {
+      const pkg = row.getValue("package") as keyof typeof packageDetails;
+      const details = packageDetails[pkg];
+      return (
+        <Badge variant={details.variant} className="capitalize w-fit">
+          {details.name}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -82,7 +97,9 @@ export const usersColumns: ColumnDef<User>[] = [
     accessorKey: "joinedDate",
     header: "Joined Date",
     cell: ({ row }) => (
-      <span className="text-muted-foreground">{row.getValue("joinedDate")}</span>
+      <span className="text-muted-foreground">
+        {row.getValue("joinedDate")}
+      </span>
     ),
   },
   {
