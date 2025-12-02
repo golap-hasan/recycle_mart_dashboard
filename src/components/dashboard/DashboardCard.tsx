@@ -1,10 +1,11 @@
+"use client";
 import { cn } from "@/lib/utils";
 
 interface DashboardCardProps {
   icon: React.ElementType;
   title: string;
   value: string | number;
-  change?: string; // e.g., "+12%" or "-5%"
+  change?: string;
 }
 
 export default function DashboardCard({ icon: Icon, title, value, change }: DashboardCardProps) {
