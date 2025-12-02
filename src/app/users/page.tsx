@@ -54,7 +54,7 @@ const meta = {
   total: mockUsers.length,
   page: 1,
   limit: 10,
-  totalPages: 1,
+  totalPages: 10,
 };
 
 export default async function UsersPage() {

@@ -84,7 +84,7 @@ const meta = {
   total: mockLocations.length,
   page: 1,
   limit: 10,
-  totalPages: 1,
+  totalPages: 5,
 };  
 export default async function LocationsPage() {
   return (
