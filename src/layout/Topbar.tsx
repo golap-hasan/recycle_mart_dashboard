@@ -12,12 +12,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   PanelLeft,
   UserCircle,
-  Settings,
   LogOut,
 } from "lucide-react";
 
 import MobileSidebar from "./MobileSidebar";
 import ThemeToggle from "@/providers/ThemeToggle";
+import Link from "next/link";
 
 interface TopbarProps {
   onToggleSidebar: () => void;
@@ -77,16 +77,12 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
             <DropdownMenuSeparator className="bg-border" />
 
             {/* Menu Items */}
-            <DropdownMenuItem className="text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer">
-              <UserCircle className="mr-2 h-4 w-4" />
-              <span>My Account</span>
+            <DropdownMenuItem asChild className="text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer">
+              <Link href="/account" className="flex items-center w-full">
+                <UserCircle className="mr-2 h-4 w-4" />
+                <span>My Account</span>
+              </Link>
             </DropdownMenuItem>
-
-            <DropdownMenuItem className="text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-            </DropdownMenuItem>
-
             <DropdownMenuSeparator className="bg-border" />
 
             <DropdownMenuItem className="text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer">
