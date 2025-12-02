@@ -9,32 +9,28 @@ const packages: Package[] = [
     name: "Free",
     price: 0,
     duration: "Month",
-    ads: 6,
-    status: "active",
+    ads: 6
   },
   {
     id: "2",
     name: "Basic",
     price: 299,
     duration: "Month",
-    ads: 10,
-    status: "active",
+    ads: 10
   },
   {
     id: "3",
     name: "Pro",
     price: 799,
     duration: "Month",
-    ads: 15,
-    status: "active",
+    ads: 15
   },
   {
     id: "4",
     name: "Premium",
     price: 1499,
     duration: "Month",
-    ads: 20,
-    status: "active",
+    ads: 20
   },
 ];
 

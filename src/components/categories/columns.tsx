@@ -83,8 +83,7 @@ export const categoriesColumns: ColumnDef<Category>[] = [
   {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
-    cell: ({ row }) => {
-      const category = row.original;
+    cell: () => {
       return (
         <div className="text-right">
           <DropdownMenu>

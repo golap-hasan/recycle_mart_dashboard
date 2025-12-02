@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
 export type Package = {
@@ -10,7 +9,6 @@ export type Package = {
   price: number;
   duration: string;
   ads: number;
-  status: "active" | "inactive";
 };
 
 export const columns: ColumnDef<Package>[] = [
@@ -49,18 +47,6 @@ export const columns: ColumnDef<Package>[] = [
         {row.getValue("features")} Ads/Month
       </div>
     ),
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      return (
-        <Badge variant={status === "active" ? "default" : "secondary"}>
-          {status}
-        </Badge>
-      );
-    },
   },
   {
     header: () => <div className="text-right">Actions</div>,

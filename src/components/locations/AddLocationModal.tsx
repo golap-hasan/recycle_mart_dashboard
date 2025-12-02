@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -29,12 +29,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Plus, Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   division: z.string().min(1, "Division is required"),
-  locationName: z.string().min(1, "Location name is required"),
+  district: z.string().min(1, "District is required"),
 });
 
 const divisions = [
@@ -48,6 +47,89 @@ const divisions = [
   "Mymensingh",
 ];
 
+const districtsByDivision: Record<string, string[]> = {
+  Dhaka: [
+    "Dhaka",
+    "Faridpur",
+    "Gazipur",
+    "Gopalganj",
+    "Kishoreganj",
+    "Madaripur",
+    "Manikganj",
+    "Munshiganj",
+    "Narayanganj",
+    "Narsingdi",
+    "Rajbari",
+    "Shariatpur",
+    "Tangail",
+  ],
+  Chittagong: [
+    "Bandarban",
+    "Brahmanbaria",
+    "Chandpur",
+    "Chittagong",
+    "Comilla",
+    "Cox's Bazar",
+    "Feni",
+    "Khagrachari",
+    "Lakshmipur",
+    "Noakhali",
+    "Rangamati",
+  ],
+  Rajshahi: [
+    "Bogura",
+    "Joypurhat",
+    "Naogaon",
+    "Natore",
+    "Chapainawabganj",
+    "Pabna",
+    "Rajshahi",
+    "Sirajganj",
+  ],
+  Khulna: [
+    "Bagerhat",
+    "Chuadanga",
+    "Jashore",
+    "Jhenaidah",
+    "Khulna",
+    "Kushtia",
+    "Magura",
+    "Meherpur",
+    "Narail",
+    "Satkhira",
+  ],
+  Barisal: [
+    "Barguna",
+    "Barisal",
+    "Bhola",
+    "Jhalokati",
+    "Patuakhali",
+    "Pirojpur",
+  ],
+  Sylhet: [
+    "Habiganj",
+    "Moulvibazar",
+    "Sunamganj",
+    "Sylhet",
+  ],
+  Rangpur: [
+    "Dinajpur",
+    "Gaibandha",
+    "Kurigram",
+    "Lalmonirhat",
+    "Nilphamari",
+    "Panchagarh",
+    "Rangpur",
+    "Thakurgaon",
+  ],
+  Mymensingh: [
+    "Jamalpur",
+    "Mymensingh",
+    "Netrokona",
+    "Sherpur",
+  ],
+};
+
 export function AddLocationModal() {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +138,7 @@ export function AddLocationModal() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       division: "",
-      locationName: "",
+      district: ""
     },
   });
 
@@ -69,6 +151,8 @@ export function AddLocationModal() {
     setOpen(false);
     form.reset();
   }
+
+  const selectedDivision = useWatch({ control: form.control, name: "division" });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -94,7 +178,13 @@ export function AddLocationModal() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Division</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      form.setValue("district", "");
+                    }}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select division" />
@@ -115,16 +205,36 @@ export function AddLocationModal() {
 
             <FormField
               control={form.control}
-              name="locationName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. Dinajpur or Dhanmondi" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              name="district"
+              render={({ field }) => {
+                const districtOptions = selectedDivision
+                  ? districtsByDivision[selectedDivision] ?? []
+                  : [];
+                return (
+                  <FormItem>
+                    <FormLabel>District</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={!selectedDivision}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select district" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {districtOptions.map((d) => (
+                          <SelectItem key={d} value={d}>
+                            {d}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <DialogFooter className="pt-4">
