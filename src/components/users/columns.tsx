@@ -4,20 +4,15 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreVertical, Trash2, Edit, Ban } from "lucide-react";
+import { Ban, Undo } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export interface User {
   id: string;
   name: string;
   email: string;
   role: string;
-  status: "active" | "inactive" | "banned";
+  status: "active" | "banned";
   package: "free" | "basic" | "pro" | "premium";
   joinedDate: string;
   avatar?: string;
@@ -106,30 +101,23 @@ export const usersColumns: ColumnDef<User>[] = [
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
     cell: ({ row }) => {
-      const user = row.original;
+      const status = row.getValue("status") as string;
       return (
         <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="h-4 w-4" />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon">
+                {status === "active" ? (
+                  <Ban className="h-4 w-4" />
+                ) : (
+                  <Undo className="h-4 w-4" />
+                )}
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit User
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Ban className="mr-2 h-4 w-4" />
-                {user.status === "banned" ? "Unban" : "Ban"} User
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete User
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </TooltipTrigger>
+            <TooltipContent>
+              {status === "active" ? "Ban User" : "Unban User"}
+            </TooltipContent>
+          </Tooltip>
         </div>
       );
     },

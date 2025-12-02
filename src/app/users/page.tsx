@@ -29,7 +29,7 @@ const mockUsers: User[] = [
     name: "Bob Johnson",
     email: "bob.johnson@example.com",
     role: "moderator",
-    status: "inactive",
+    status: "banned",
     package: "pro",
     joinedDate: "2024-03-10",
     avatar: "",
