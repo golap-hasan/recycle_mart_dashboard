@@ -52,6 +52,13 @@ const packages: Package[] = [
   },
 ];
 
+const meta = {
+  total: 5,
+  page: 1,
+  limit: 5,
+  totalPages: 20,
+};
+
 export default function PackagesPage() {
   return (
     <div className="space-y-6">
@@ -65,7 +72,7 @@ export default function PackagesPage() {
           Create Package
         </Button>
       </div>
-      <DataTable columns={columns} data={packages} />
+      <DataTable columns={columns} data={packages} meta={meta} />
     </div>
   );
 }

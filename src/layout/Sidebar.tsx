@@ -59,7 +59,7 @@ const menuGroups: MenuGroup[] = [
       { icon: Headphones, label: "Support Management", href: "/support" },
       { icon: Image, label: "Content Management", href: "/content" },
       { icon: ShieldAlert, label: "Admin & Roles", href: "/roles" },
-      { icon: Ticket, label: "Marketing Tools", href: "/marketing" },
+      { icon: Ticket, label: "Lottery Management", href: "/lottery" },
     ],
   },
 ];
@@ -75,7 +75,9 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
 
   const toggleExpand = (label: string) => {
     setExpandedItems((prev) =>
-      prev.includes(label) ? prev.filter((item) => item !== label) : [...prev, label]
+      prev.includes(label)
+        ? prev.filter((item) => item !== label)
+        : [...prev, label]
     );
   };
 
@@ -96,7 +98,9 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Asterisk className="w-5 h-5 text-background" />
               </div>
-              <span className="text-foreground font-semibold text-lg">Analytics</span>
+              <span className="text-foreground font-semibold text-lg">
+                Analytics
+              </span>
             </div>
           )}
           {isCollapsed && (
@@ -123,15 +127,15 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                   const Icon = item.icon;
                   const isExpanded = expandedItems.includes(item.label);
                   const active = isActive(item.href);
-                  
+
                   const menuButton = (
                     <Button
                       key={itemIndex}
                       variant="ghost"
                       className={cn(
                         "w-full justify-start transition-colors",
-                        active 
-                          ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary" 
+                        active
+                          ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary"
                           : "text-muted-foreground hover:text-foreground hover:bg-muted",
                         isCollapsed ? "px-0 justify-center" : "px-3"
                       )}
@@ -153,11 +157,11 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                             </span>
                           )}
                           {item.expandable && (
-                            <ChevronRight 
+                            <ChevronRight
                               className={cn(
                                 "w-4 h-4 ml-auto transition-transform",
                                 isExpanded && "rotate-90"
-                              )} 
+                              )}
                             />
                           )}
                         </>
@@ -179,7 +183,11 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                       {item.children && isExpanded && (
                         <div className="ml-9 mt-1 space-y-1">
                           {item.children.map((child, childIndex) => (
-                            <Link href={child.href} key={childIndex} className="block">
+                            <Link
+                              href={child.href}
+                              key={childIndex}
+                              className="block"
+                            >
                               <Button
                                 variant="ghost"
                                 className={cn(
