@@ -68,11 +68,11 @@ const meta = {
 export default function LotteryManagement() {
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row items-center justify-between">
+      <div className="flex gap-4 flex-col md:flex-row md:items-center justify-between">
        <PageHeader title="Lottery Management" description="Create and manage your lottery campaigns."/>
         <Sheet>
           <SheetTrigger asChild>
-            <Button size="sm">
+            <Button size="sm" className="w-fit">
               <Plus /> Create Lottery
             </Button>
           </SheetTrigger>

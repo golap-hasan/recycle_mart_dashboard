@@ -61,7 +61,7 @@ const menuGroups: MenuGroup[] = [
       { icon: Headphones, label: "Support Management", href: "/support" },
       { icon: Image, label: "Content Management", href: "/content" },
       { icon: ShieldAlert, label: "Admin & Roles", href: "/roles" },
-      { icon: Ticket, label: "Marketing Tools", href: "/marketing" },
+      { icon: Ticket, label: "Lottery Management", href: "/lottery" },
     ],
   },
 ];
