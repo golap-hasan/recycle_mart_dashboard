@@ -1,8 +1,7 @@
 import PageHeader from "@/components/ui/page-header";
 import { DataTable } from "@/components/ui/data-table";
 import { Package, columns } from "@/components/packages/columns";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { CreatePackageModal } from "@/components/packages/CreatePackageModal";
 
 const packages: Package[] = [
   {
@@ -10,36 +9,32 @@ const packages: Package[] = [
     name: "Free",
     price: 0,
     duration: "Month",
-    features: 6,
+    ads: 6,
     status: "active",
-    popular: false,
   },
   {
     id: "2",
     name: "Basic",
     price: 299,
     duration: "Month",
-    features: 10,
+    ads: 10,
     status: "active",
-    popular: false,
   },
   {
     id: "3",
     name: "Pro",
     price: 799,
     duration: "Month",
-    features: 15,
+    ads: 15,
     status: "active",
-    popular: true,
   },
   {
     id: "4",
     name: "Premium",
     price: 1499,
     duration: "Month",
-    features: 20,
+    ads: 20,
     status: "active",
-    popular: false,
   },
 ];
 
@@ -58,10 +53,7 @@ export default function PackagesPage() {
           title="Packages / Membership Plans"
           description="Manage membership plans and pricing packages."
         />
-        <Button size="sm" className="w-fit">
-          <Plus />
-          Create Package
-        </Button>
+        <CreatePackageModal />
       </div>
       <DataTable columns={columns} data={packages} meta={meta} />
     </div>

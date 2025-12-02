@@ -4,80 +4,57 @@ import {
   type Location,
 } from "@/components/locations/columns";
 import PageHeader from "@/components/ui/page-header";
+import { AddLocationModal } from "@/components/locations/AddLocationModal";
 
 // Mock location data (Bangladesh locations - Bikroy.com style)
 const mockLocations: Location[] = [
   {
     id: "1",
     division: "Dhaka",
-    district: "Dhaka",
     area: "Dhanmondi",
-    postcode: "1205",
-    activeAds: 450,
-    status: "active",
+    activeAds: 450
   },
   {
     id: "2",
     division: "Dhaka",
-    district: "Dhaka",
     area: "Gulshan",
-    postcode: "1212",
-    activeAds: 680,
-    status: "active",
+    activeAds: 680
   },
   {
     id: "3",
     division: "Dhaka",
-    district: "Dhaka",
     area: "Mirpur",
-    postcode: "1216",
-    activeAds: 520,
-    status: "active",
+    activeAds: 520
   },
   {
     id: "4",
     division: "Dhaka",
-    district: "Dhaka",
     area: "Uttara",
-    postcode: "1230",
-    activeAds: 390,
-    status: "active",
+    activeAds: 390
   },
   {
     id: "5",
     division: "Chittagong",
-    district: "Chittagong",
     area: "Agrabad",
-    postcode: "4100",
-    activeAds: 320,
-    status: "active",
+    activeAds: 320
   },
   {
     id: "6",
     division: "Chittagong",
-    district: "Chittagong",
     area: "Khulshi",
-    postcode: "4225",
-    activeAds: 180,
-    status: "active",
+    activeAds: 180
   },
   {
     id: "7",
     division: "Sylhet",
-    district: "Sylhet",
     area: "Zindabazar",
-    postcode: "3100",
-    activeAds: 95,
-    status: "active",
+    activeAds: 95
   },
   {
     id: "8",
     division: "Rajshahi",
-    district: "Rajshahi",
     area: "Shaheb Bazar",
-    postcode: "6100",
-    activeAds: 65,
-    status: "inactive",
+    activeAds: 65
   },
 ];
 const meta = {
@@ -85,14 +62,17 @@ const meta = {
   page: 1,
   limit: 10,
   totalPages: 5,
-};  
+};
 export default async function LocationsPage() {
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Locations Management"
-        description="Manage regions, cities, and areas across Bangladesh."
-      />
+      <div className="flex gap-4 flex-col md:flex-row md:items-center justify-between">
+        <PageHeader
+          title="Locations Management"
+          description="Manage regions, cities, and areas across Bangladesh."
+        />
+        <AddLocationModal />
+      </div>
       <DataTable columns={locationsColumns} data={mockLocations} meta={meta} />
     </div>
   );

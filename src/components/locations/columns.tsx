@@ -3,22 +3,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreVertical, Trash2, Edit, MapPin } from "lucide-react";
+import {  Trash2, Edit, MapPin } from "lucide-react";
 
 export interface Location {
   id: string;
   division: string;
-  district: string;
   area: string;
-  postcode: string;
   activeAds: number;
-  status: "active" | "inactive";
 }
 
 export const locationsColumns: ColumnDef<Location>[] = [
@@ -27,13 +18,6 @@ export const locationsColumns: ColumnDef<Location>[] = [
     header: "Division",
     cell: ({ row }) => (
       <span className="font-medium">{row.getValue("division")}</span>
-    ),
-  },
-  {
-    accessorKey: "district",
-    header: "District",
-    cell: ({ row }) => (
-      <span className="text-muted-foreground">{row.getValue("district")}</span>
     ),
   },
   {
@@ -50,13 +34,6 @@ export const locationsColumns: ColumnDef<Location>[] = [
     },
   },
   {
-    accessorKey: "postcode",
-    header: "Postcode",
-    cell: ({ row }) => (
-      <Badge variant="outline">{row.getValue("postcode")}</Badge>
-    ),
-  },
-  {
     accessorKey: "activeAds",
     header: "Active Ads",
     cell: ({ row }) => {
@@ -69,48 +46,22 @@ export const locationsColumns: ColumnDef<Location>[] = [
     },
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      return (
-        <Badge
-          variant={status === "active" ? "default" : "secondary"}
-          className="capitalize"
-        >
-          {status}
-        </Badge>
-      );
-    },
-  },
-  {
-    id: "actions",
     header: () => <div className="text-right">Actions</div>,
-    cell: ({ row }) => {
-      const location = row.original;
+    id: "actions",
+    cell: () => {
       return (
-        <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit Location
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <MapPin className="mr-2 h-4 w-4" />
-                Manage Areas
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete Location
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" size="icon-sm" aria-label="Edit">
+            <Edit />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Delete"
+            className="text-destructive"
+          >
+            <Trash2 />
+          </Button>
         </div>
       );
     },

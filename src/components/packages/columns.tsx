@@ -3,24 +3,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
+import { Edit, Trash2 } from "lucide-react";
 export type Package = {
   id: string;
   name: string;
   price: number;
   duration: string;
-  features: number; // count of features
+  ads: number;
   status: "active" | "inactive";
-  popular: boolean;
 };
 
 export const columns: ColumnDef<Package>[] = [
@@ -75,36 +65,19 @@ export const columns: ColumnDef<Package>[] = [
   {
     header: () => <div className="text-right">Actions</div>,
     id: "actions",
-    cell: ({ row }) => {
-      const pkg = row.original;
-
+    cell: () => {
       return (
-        <div className="flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(pkg.id)}
-              >
-                Copy ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Pencil className="mr-2 h-4 w-4" />
-                Edit Package
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete Package
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" size="icon-sm" aria-label="Edit Package">
+            <Edit />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="text-destructive"
+          >
+            <Trash2 />
+          </Button>
         </div>
       );
     },
