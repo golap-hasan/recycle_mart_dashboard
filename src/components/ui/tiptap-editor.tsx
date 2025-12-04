@@ -2,16 +2,19 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
+// import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
-import Link from "@tiptap/extension-link";
+// import Link from "@tiptap/extension-link";
+import Image from "@tiptap/extension-image";
+import Placeholder from "@tiptap/extension-placeholder";
+// import Code from "@tiptap/extension-code"; 
 
 import { 
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
   List, ListOrdered, 
   Heading1, Heading2, Heading3,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  Quote, Undo, Redo, Link as LinkIcon
+  Quote, Undo, Redo, Link as LinkIcon, Image as ImageIcon, Code as CodeIcon
 } from "lucide-react";
 import { Toggle } from "@/components/ui/toggle";
 import { Button } from "@/components/ui/button";
@@ -32,19 +35,25 @@ const TiptapEditor = ({ value, onChange, placeholder }: TiptapEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Underline,
+      // Underline,
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
-      Link.configure({
-        openOnClick: false,
+      // Link.configure({
+      //   openOnClick: false,
+      // }),
+      Image,
+      Placeholder.configure({
+        placeholder: placeholder || 'Type here…',
+        includeChildren: true,
       }),
+      // Code
     ],
     content: value,
     editorProps: {
       attributes: {
         class: 
-          "min-h-[500px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 prose prose-sm max-w-none dark:prose-invert focus:outline-none",
+          "min-h-[500px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 prose prose-sm max-w-none dark:prose-invert focus:outline-none",
       },
     },
     onUpdate: ({ editor }) => {
@@ -69,6 +78,12 @@ const TiptapEditor = ({ value, onChange, placeholder }: TiptapEditorProps) => {
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }
 
+  const addImage = () => {
+    const url = window.prompt('Image URL');
+    if (!url) return;
+    editor.chain().focus().setImage({ src: url }).run();
+  }
+
   return (
     <div className="flex flex-col gap-2 w-full">
       {/* 🔥 Tooltip Provider পুরো টুলবারকে র‍্যাপ করেছে 🔥 */}
@@ -79,7 +94,7 @@ const TiptapEditor = ({ value, onChange, placeholder }: TiptapEditorProps) => {
           {/* Undo */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button size="sm" variant="ghost" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} className="h-8 w-8 p-0">
+              <Button size="sm" variant="ghost" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().chain().focus().undo().run()} className="h-8 w-8 p-0">
                 <Undo className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -89,7 +104,7 @@ const TiptapEditor = ({ value, onChange, placeholder }: TiptapEditorProps) => {
           {/* Redo */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button size="sm" variant="ghost" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} className="h-8 w-8 p-0">
+              <Button size="sm" variant="ghost" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().chain().focus().redo().run()} className="h-8 w-8 p-0">
                 <Redo className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -242,6 +257,30 @@ const TiptapEditor = ({ value, onChange, placeholder }: TiptapEditorProps) => {
               </Toggle>
             </TooltipTrigger>
             <TooltipContent>Blockquote</TooltipContent>
+          </Tooltip>
+
+          {/* Code */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Toggle 
+                size="sm" 
+                pressed={editor.isActive("code")} 
+                onPressedChange={() => editor.chain().focus().toggleCode().run()}
+              >
+                <CodeIcon className="h-4 w-4" />
+              </Toggle>
+            </TooltipTrigger>
+            <TooltipContent>Inline Code</TooltipContent>
+          </Tooltip>
+          
+          {/* Image */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button size="sm" variant="ghost" onClick={addImage} className="h-8 w-8 p-0">
+                <ImageIcon className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Image</TooltipContent>
           </Tooltip>
           
           {/* Link */}
