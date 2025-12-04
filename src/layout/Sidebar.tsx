@@ -22,6 +22,8 @@ import {
   ChevronRight,
   Asterisk,
   LogOut,
+  FileText,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
@@ -60,6 +62,15 @@ const menuGroups: MenuGroup[] = [
       { icon: Image, label: "Content Management", href: "/content" },
       { icon: ShieldAlert, label: "Admin & Roles", href: "/roles" },
       { icon: Ticket, label: "Lottery Management", href: "/lottery" },
+    ],
+  },
+  {
+    title: "Settings",
+    items: [
+      { icon: FileText, label: "About Us", href: "/about-us" },
+      { icon: Shield, label: "Privacy Policy", href: "/privacy-policy" },
+      // { icon: Image, label: "Terms & Conditions", href: "/terms-conditions" },
+      // { icon: Image, label: "FAQ", href: "/faq" },
     ],
   },
 ];
