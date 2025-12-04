@@ -2,7 +2,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import TiptapEditor from "@/components/ui/tiptap-editor";
 
@@ -29,13 +29,10 @@ export default function AboutUs() {
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
-                
                 <TiptapEditor 
                   value={field.value || ""} 
                   onChange={field.onChange} 
                 />
-                
                 <FormMessage />
               </FormItem>
             )}

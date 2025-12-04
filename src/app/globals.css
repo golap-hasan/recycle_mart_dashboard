@@ -175,3 +175,56 @@
 .ProseMirror code {
   @apply bg-muted text-foreground px-1.5 py-0.5 rounded-md font-mono text-sm border border-border;
 }
+
+/* --- Tiptap Table Styles (From Documentation) --- */
+.ProseMirror table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.ProseMirror td,
+.ProseMirror th {
+  min-width: 1em;
+  border: 1px solid #ced4da; /* বর্ডার কালার */
+  padding: 6px 8px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.ProseMirror th {
+  font-weight: bold;
+  text-align: left;
+  background-color: #f3f4f6; /* হালকা গ্রে ব্যাকগ্রাউন্ড */
+}
+
+.ProseMirror .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(200, 200, 255, 0.4); /* সিলেকশন কালার */
+  pointer-events: none;
+}
+
+.ProseMirror .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: -2px;
+  width: 4px;
+  background-color: #adf;
+  pointer-events: none;
+}
+
+/* ডার্ক মোড ফিক্স */
+.dark .ProseMirror th {
+  background-color: #1e293b;
+  border-color: #374151;
+}
+.dark .ProseMirror td {
+  border-color: #374151;
+}
