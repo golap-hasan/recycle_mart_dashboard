@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,12 +20,41 @@ import {
 import MobileSidebar from "./MobileSidebar";
 import ThemeToggle from "@/providers/ThemeToggle";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { logOut } from "@/services/auth";
+import { SuccessToast, ErrorToast } from "@/lib/utils";
 
 interface TopbarProps {
   onToggleSidebar: () => void;
 }
 
 export default function Topbar({ onToggleSidebar }: TopbarProps) {
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return <header className="h-20 bg-background border-b border-border" />;
+  }
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logOut();
+      SuccessToast("Logged out successfully!");
+      router.push("/auth/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      ErrorToast("Failed to logout. Please try again.");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <header className="h-20 bg-background border-b border-border flex items-center px-4 justify-between">
       {/* Left Section - Menu Toggle */}
@@ -85,9 +116,17 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-border" />
 
-            <DropdownMenuItem className="text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer">
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+            <DropdownMenuItem 
+              className="text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+            >
+              {isLoggingOut ? (
+                <Spinner className="mr-2 h-4 w-4" />
+              ) : (
+                <LogOut className="mr-2 h-4 w-4" />
+              )}
+              <span>{isLoggingOut ? "Logging out..." : "Log out"}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

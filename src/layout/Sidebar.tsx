@@ -25,9 +25,10 @@ import {
   FileText,
   Shield,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, SuccessToast, ErrorToast } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { logOut } from "@/services/auth";
 
 interface MenuItem {
   icon: React.ElementType;
@@ -81,6 +82,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isCollapsed }: SidebarProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -93,6 +95,20 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   };
 
   const isActive = (href: string) => pathname === href;
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logOut();
+      SuccessToast("Logged out successfully!");
+      router.push("/auth/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      ErrorToast("Failed to logout. Please try again.");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -230,6 +246,10 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
             <Button
               variant="ghost"
               className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-muted px-3"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              loading={isLoggingOut}
+              loadingText="Logging out..."
             >
               <LogOut className="w-4 h-4 mr-3" />
               <span>Log out</span>
@@ -241,12 +261,15 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
                   variant="ghost"
                   size="icon"
                   className="w-full text-muted-foreground hover:text-foreground hover:bg-muted"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  loading={isLoggingOut}
                 >
                   <LogOut className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                <p>Log out</p>
+                <p>{isLoggingOut ? "Logging out..." : "Log out"}</p>
               </TooltipContent>
             </Tooltip>
           )}

@@ -3,7 +3,7 @@
 import { Poppins, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import RootLayoutClient from "@/layout/MainLayout";
+import { Toaster } from "sonner";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -34,7 +34,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <RootLayoutClient>{children}</RootLayoutClient>
+          {children}
+          <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>
     </html>

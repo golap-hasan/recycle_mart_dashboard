@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -25,8 +25,9 @@ import {
   LogOut,
   PanelLeft,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, SuccessToast, ErrorToast } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
+import { logOut } from "@/services/auth";
 
 
 interface MenuItem {
@@ -67,10 +68,20 @@ const menuGroups: MenuGroup[] = [
 ];
 
 export default function MobileSidebar() {
+  const [isMounted, setIsMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   const toggleExpand = (label: string) => {
     setExpandedItems((prev) =>
@@ -83,6 +94,21 @@ export default function MobileSidebar() {
   const handleNavigation = (href: string) => {
     router.push(href);
     setOpen(false);
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logOut();
+      SuccessToast("Logged out successfully!");
+      router.push("/auth/login");
+      setOpen(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+      ErrorToast("Failed to logout. Please try again.");
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -181,6 +207,10 @@ export default function MobileSidebar() {
           <Button
             variant="ghost"
             className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-muted px-3 font-semibold text-base"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            loading={isLoggingOut}
+            loadingText="Logging out..."
           >
             <LogOut className="w-4 h-4 mr-3" />
             <span>Log out</span>
