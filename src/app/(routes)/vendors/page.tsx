@@ -16,7 +16,7 @@ export default async function VendorsPage({
   const { data: vendors, meta } = result;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-1">
       <div className="flex justify-between">
         <PageHeader
           title="Vendor Management"

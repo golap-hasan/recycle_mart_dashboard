@@ -1,60 +1,29 @@
-"use server";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getValidAccessTokenForServerActions } from "@/lib/getValidAccessToken";
+"use server";
+import { buildQueryString } from "@/lib/buildQueryString";
+import { serverFetch } from "@/lib/fetcher";
 import { updateTag } from "next/cache";
 
 // GET ALL VENDORS
-export const getAllVendors = async (query: Record<string, any> = {}) => {
-  const accessToken = await getValidAccessTokenForServerActions();
-  
-  const queryString = new URLSearchParams(query as any).toString();
-
+export const getAllVendors = async (query: Record<string, string | string[] | undefined> = {}) => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/vendor/admin?${queryString}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        next: {
-          revalidate: 300,
-          tags: ["VENDOR-LIST"],
-        },
-      }
-    );
-
-    if (!res.ok) throw new Error("Failed to fetch");
-
-    return await res.json();
+    return await serverFetch(`/vendor/admin${buildQueryString(query)}`, {
+      revalidate: 300,
+      tags: ["VENDOR-LIST"],
+    });
   } catch {
-    return {
-      success: false,
-      data: [],
-      meta: { total: 0, page: 1, limit: 10, totalPages: 0 },
-    };
+    return { success: false, data: [], meta: { total: 0, page: 1, limit: 10, totalPages: 0 } };
   }
 };
 
 // APPROVE VENDOR
-export const approveVendor = async (vendorId: string): Promise<any> => {
-  const accessToken = await getValidAccessTokenForServerActions();
-
+export const approveVendor = async (vendorId: string) => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/vendor/${vendorId}/approve`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const result = await serverFetch(`/vendor/${vendorId}/approve`, {
+      method: "PATCH",
+    });
 
-    const result = await res.json();
-
-    if (result?.success) {
-      updateTag("VENDOR-LIST"); 
-    }
+    if (result?.success) updateTag("VENDOR-LIST");
     return result;
   } catch (error: any) {
     return { success: false, message: error?.message };
@@ -63,25 +32,14 @@ export const approveVendor = async (vendorId: string): Promise<any> => {
 
 // REJECT VENDOR
 export const rejectVendor = async (vendorId: string, reason: string): Promise<any> => {
-  const accessToken = await getValidAccessTokenForServerActions();
-
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/vendor/${vendorId}/reject`,
-      {
+    const result = await serverFetch(`/vendor/${vendorId}/reject`, {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ reason }),
       }
     );
 
-    const result = await res.json();
-    if (result?.success) {
-      updateTag("VENDOR-LIST");
-    }
+    if (result?.success) updateTag("VENDOR-LIST");
     return result;
   } catch (error: any) {
     return { success: false, message: error?.message };
@@ -90,25 +48,13 @@ export const rejectVendor = async (vendorId: string, reason: string): Promise<an
 
 // BLOCK VENDOR
 export const blockVendor = async (vendorId: string, reason: string): Promise<any> => {
-  const accessToken = await getValidAccessTokenForServerActions();
-
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/vendor/${vendorId}/block`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ reason }),
-      }
-    );
+    const result = await serverFetch(`/vendor/${vendorId}/block`, {
+      method: "PATCH",
+      body: JSON.stringify({ reason }),
+    });
 
-    const result = await res.json();
-    if (result?.success) {
-      updateTag("VENDOR-LIST");
-    }
+    if (result?.success) updateTag("VENDOR-LIST");
     return result;
   } catch (error: any) {
     return { success: false, message: error?.message };
@@ -116,26 +62,17 @@ export const blockVendor = async (vendorId: string, reason: string): Promise<any
 };
 
 // UNBLOCK VENDOR
-export const unblockVendor = async (vendorId: string): Promise<any> => {
-  const accessToken = await getValidAccessTokenForServerActions();
-
+export const unblockVendor = async (vendorId: string, reason: string): Promise<any> => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/vendor/${vendorId}/unblock`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const result = await serverFetch(`/vendor/${vendorId}/unblock`, {
+      method: "PATCH",
+      body: JSON.stringify({ reason }),
+    });
 
-    const result = await res.json();
-    if (result?.success) {
-      updateTag("VENDOR-LIST");
-    }
+    if (result?.success) updateTag("VENDOR-LIST");
     return result;
   } catch (error: any) {
     return { success: false, message: error?.message };
   }
 };
+
