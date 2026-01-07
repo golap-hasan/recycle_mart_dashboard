@@ -157,7 +157,7 @@ export function DataTable<TData, TValue>({
       </ScrollArea>
 
       <React.Suspense fallback={null}>
-        {meta && meta.totalPages && meta.totalPages > 1 && (
+        {meta && (
           <DataTablePagination table={table} meta={meta} />
         )}
       </React.Suspense>

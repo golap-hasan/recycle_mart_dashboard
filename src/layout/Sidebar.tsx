@@ -50,6 +50,7 @@ const menuGroups: MenuGroup[] = [
     items: [
       { icon: LayoutDashboard, label: "Dashboard", href: "/" },
       { icon: Users, label: "User Management", href: "/users" },
+      { icon: Users, label: "Vendor Management", href: "/vendors" },
       { icon: Megaphone, label: "Ads Management", href: "/ads" },
       { icon: Layers, label: "Category & Subcategory", href: "/categories" },
       { icon: MapPin, label: "Locations", href: "/locations" },

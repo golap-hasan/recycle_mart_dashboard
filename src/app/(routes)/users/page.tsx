@@ -1,75 +1,29 @@
 import { DataTable } from "@/components/ui/data-table";
 import PageHeader from "@/components/ui/page-header";
-import { usersColumns, type User } from "@/components/users/columns";
+import { usersColumns } from "@/components/users/columns";
+import { getAllUsers } from "@/services/users";
+import { SearchParams } from "@/types/global.types";
 
-// Fake user data
-const mockUsers: User[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "admin",
-    status: "active",
-    package: "premium",
-    joinedDate: "2024-01-15",
-    avatar: "",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    role: "user",
-    status: "active",
-    package: "free",
-    joinedDate: "2024-02-20",
-    avatar: "",
-  },
-  {
-    id: "3",
-    name: "Bob Johnson",
-    email: "bob.johnson@example.com",
-    role: "moderator",
-    status: "banned",
-    package: "pro",
-    joinedDate: "2024-03-10",
-    avatar: "",
-  },
-  {
-    id: "4",
-    name: "Alice Williams",
-    email: "alice.williams@example.com",
-    role: "user",
-    status: "banned",
-    package: "basic",
-    joinedDate: "2024-04-05",
-    avatar: "",
-  },
-  {
-    id: "5",
-    name: "Charlie Brown",
-    email: "charlie.brown@example.com",
-    role: "user",
-    status: "active",
-    package: "pro",
-    joinedDate: "2024-05-12",
-    avatar: "",
-  },
-];
-const meta = {
-  total: mockUsers.length,
-  page: 1,
-  limit: 10,
-  totalPages: 10,
-};
+export default async function UsersPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const params = await searchParams;
+  const page = Number(params?.page) || 1;
+  const limit = Number(params?.limit) || 10;
 
-export default async function UsersPage() {
+  const result = await getAllUsers(page, limit);
+  const users = result?.success ? result.data : [];
+  const meta = result?.success ? result.meta : { total: 0, page, limit, totalPages: 0 };
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="User Management"
         description="Manage users, roles, and permissions here."
       />
-      <DataTable columns={usersColumns} data={mockUsers} meta={meta} />
+      <DataTable columns={usersColumns} data={users} meta={meta} />
     </div>
   );
 }
