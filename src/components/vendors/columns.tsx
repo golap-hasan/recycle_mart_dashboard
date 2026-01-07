@@ -59,7 +59,7 @@ const VendorActions = ({ vendor }: { vendor: Vendor }) => {
       if (action === "approve") {
         res = await approveVendor(vendor._id);
       } else if (action === "unblock") {
-        res = await unblockVendor(vendor._id);
+        res = await unblockVendor(vendor._id, reason);
       } else if (action === "reject") {
         if (!reason.trim()) {
            ErrorToast("Reason is required");
