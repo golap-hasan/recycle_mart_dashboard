@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getInitials } from "@/lib/utils";
 import { User } from "@/types/users.type";
 
 export const usersColumns: ColumnDef<User>[] = [
@@ -17,10 +17,7 @@ export const usersColumns: ColumnDef<User>[] = [
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.image} alt={user.name} />
             <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
+              {getInitials(user.name)}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">

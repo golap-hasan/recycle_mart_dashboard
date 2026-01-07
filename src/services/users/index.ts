@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getValidAccessTokenForServerActions } from "@/lib/getValidAccessToken";
 
-// GET ALL USERS
-export const getAllUsers = async (page = 1, limit = 10): Promise<any> => {
+export const getAllUsers = async (query: Record<string, any> = {}) => {
   const accessToken = await getValidAccessTokenForServerActions();
+  
+  const queryString = new URLSearchParams(query as any).toString();
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/user/admin-get-all?page=${page}&limit=${limit}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/user/admin-get-all?${queryString}`,
       {
-        method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -20,10 +20,14 @@ export const getAllUsers = async (page = 1, limit = 10): Promise<any> => {
       }
     );
 
-    const result = await res.json();
+    if (!res.ok) throw new Error("Failed to fetch");
 
-    return result;
-  } catch (error: any) {
-    return Error(error);
+    return await res.json();
+  } catch {
+    return {
+      success: false,
+      data: [],
+      meta: { total: 0, page: 1, limit: 10, totalPages: 0 },
+    };
   }
 };

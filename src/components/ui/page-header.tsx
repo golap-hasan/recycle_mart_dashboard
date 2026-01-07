@@ -1,9 +1,14 @@
 "use client"
 
-const PageHeader = ({title, description}: {title: string, description: string}) => {
+import { Badge } from "@/components/ui/badge"
+
+const PageHeader = ({title, description, length}: {title: string, description: string, length?: number}) => {
     return (
-        <div className="space-y-2">
-            <h1 className="text-2xl font-bold mb-2">{title}</h1>
+        <div className="grid gap-2">
+            <div className="flex items-center gap-4">
+                <h1 className="text-2xl font-bold">{title}</h1>
+                {length && <Badge className="rounded-full">{length}</Badge>}
+            </div>
             <p className="text-muted-foreground">
                 {description}
             </p>

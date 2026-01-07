@@ -4,14 +4,15 @@ import { getValidAccessTokenForServerActions } from "@/lib/getValidAccessToken";
 import { updateTag } from "next/cache";
 
 // GET ALL VENDORS
-export const getAllVendors = async (page = 1, limit = 10): Promise<any> => {
+export const getAllVendors = async (query: Record<string, any> = {}) => {
   const accessToken = await getValidAccessTokenForServerActions();
+  
+  const queryString = new URLSearchParams(query as any).toString();
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/vendor/admin?page=${page}&limit=${limit}`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/vendor/admin?${queryString}`,
       {
-        method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -22,11 +23,15 @@ export const getAllVendors = async (page = 1, limit = 10): Promise<any> => {
       }
     );
 
-    const result = await res.json();
+    if (!res.ok) throw new Error("Failed to fetch");
 
-    return result;
-  } catch (error: any) {
-    return { success: false, message: error?.message };
+    return await res.json();
+  } catch {
+    return {
+      success: false,
+      data: [],
+      meta: { total: 0, page: 1, limit: 10, totalPages: 0 },
+    };
   }
 };
 
