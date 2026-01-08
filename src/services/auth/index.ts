@@ -93,6 +93,23 @@ export const forgotPassword = async (email: string): Promise<any> => {
   }
 };
 
+// sendForgotPasswordOtpAgain
+export const sendForgotPasswordOtpAgain = async (): Promise<any> => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('forgotPassToken')?.value;
+
+  try {
+    const result = await serverFetch('/user/send-forgot-password-otp-again', {
+      method: 'POST',
+      body: JSON.stringify({ token }),
+    });
+
+    return result;
+  } catch (error: any) {
+    return { success: false, message: error?.message || "Failed to resend OTP" };
+  }
+};
+
 // verifyOtpForForgotPassword
 export const verifyOtpForForgotPassword = async (otp: string): Promise<any> => {
   const cookieStore = await cookies();
