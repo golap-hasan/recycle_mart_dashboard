@@ -1,9 +1,9 @@
 "use client"
 
 import * as DialogPrimitive from "@radix-ui/react-dialog"
-// import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { ScrollArea } from "./scroll-area"
 
 function Dialog({
   ...props
@@ -64,7 +64,9 @@ function DialogContent({
         )}
         {...props}
       >
-        {children}
+        <ScrollArea className="max-h-[80vh]">
+          {children}
+        </ScrollArea>
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"

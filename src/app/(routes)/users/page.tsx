@@ -5,11 +5,7 @@ import { UsersSearch } from "@/components/users/users-search";
 import { getAllUsers } from "@/services/users";
 import { SearchParams } from "@/types/global.types";
 
-export default async function UsersPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
+export default async function UsersPage({searchParams}: {searchParams: SearchParams}) {
   const params = await searchParams;
   const { data: users, meta } = await getAllUsers(params);
 

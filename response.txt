@@ -1,72 +1,55 @@
 {
     "success": true,
-    "message": "Vendors retrieved successfully!",
+    "message": "Subscriptions retrieved successfully!",
     "meta": {
         "page": 1,
-        "limit": 10,
-        "total": 2,
+        "limit": 20,
+        "total": 1,
         "totalPage": 1
     },
     "data": [
         {
-            "_id": "695267726d61a39a9ad8c7e1",
+            "_id": "6953c26f0049c10f3fb76471",
             "user": {
-                "_id": "6952676e6d61a39a9ad8c7df",
-                "name": "Temoth Dyor",
-                "phone": "01832639064",
-                "email": "jefib29293@roratu.com",
-                "role": "VENDOR"
+                "_id": "694a68f24677a80ac60d4d66",
+                "name": "Khaled Mia",
+                "phone": "01712345679",
+                "image": "https://res.cloudinary.com/dweesppci/image/upload/v1767078913/recycle-mart/images/tpj930wrouk-1767078912532-user-screenshot-2025-12-30-130342.png",
+                "email": "john.buyer@example.com",
+                "otp": "428982",
+                "otpExpiry": "2025-12-23T10:38:58.806Z",
+                "isVerifiedByOTP": true,
+                "role": "BUYER",
+                "isActive": true,
+                "isDeleted": false,
+                "createdAt": "2025-12-23T10:03:30.658Z",
+                "updatedAt": "2025-12-30T07:31:54.572Z",
+                "passwordChangedAt": "2025-12-30T07:31:49.571Z"
             },
-            "storeName": "ABC shop my",
-            "storeImage": "https://res.cloudinary.com/dweesppci/image/upload/v1767008114/recycle-mart/images/56w3k480yhx-1767008110397-storeImage-download-1758523769895.png",
-            "storeLocation": "Main strret",
-            "tradeLicense": "https://res.cloudinary.com/dweesppci/image/upload/v1767008115/recycle-mart/images/mm842nwb9ub-1767008110398-tradeLicense-download-1758523362538.png",
-            "tradeLicenseNumber": "TL-1234-5678",
-            "status": "PENDING",
-            "approvalNote": null,
-            "approvedAt": null,
-            "approvedBy": null,
-            "blocked": false,
-            "blockedAt": null,
-            "blockedBy": null,
-            "blockReason": null,
-            "currentPlanId": null,
-            "planExpiresAt": null,
-            "listingsUsed": 0,
-            "createdAt": "2025-12-29T11:35:14.494Z",
-            "updatedAt": "2025-12-29T11:35:14.494Z"
-        },
-        {
-            "_id": "694a68924677a80ac60d4d63",
-            "user": {
-                "_id": "694a688d4677a80ac60d4d61",
-                "name": "Bal Vendor",
-                "phone": "01787654321",
-                "email": "jane.vendor@example.com",
-                "role": "VENDOR"
+            "autoRenew": true,
+            "createdAt": "2025-12-30T12:15:43.492Z",
+            "credits": 0,
+            "plan": {
+                "_id": "6953b88d28e593ee45dcef04",
+                "name": "Basic",
+                "price": 100,
+                "currency": "BDT",
+                "durationUnit": "MONTH",
+                "durationValue": 1,
+                "adsLimit": 10,
+                "features": [
+                    "10 Active ads listing",
+                    "Enhanced visibility",
+                    "Priority search results",
+                    "7-day featured boost (1x)"
+                ],
+                "isActive": true,
+                "createdAt": "2025-12-30T11:33:33.461Z",
+                "updatedAt": "2025-12-30T11:33:33.461Z"
             },
-            "storeName": "Jane's Recycle Shop",
-            "storeImage": "https://res.cloudinary.com/dweesppci/image/upload/v1766484112/recycle-mart/images/0eluq5zfime5-1766484110136-storeImage-546152989_4153343444949168_1787294258055292636_n.jpg",
-            "storeLocation": "123 Main Street, Dhaka",
-            "tradeLicense": "https://res.cloudinary.com/dweesppci/image/upload/v1766484113/recycle-mart/images/dvl64l71fu7-1766484110148-tradeLicense-idcardfront.png",
-            "tradeLicenseNumber": "245546545676846",
-            "status": "APPROVED",
-            "approvalNote": null,
-            "approvedAt": "2025-12-31T13:49:06.549Z",
-            "approvedBy": {
-                "_id": "694fc6705bccc374c4dc1098",
-                "name": "Khaled Siddique",
-                "email": "temothd@gmail.com"
-            },
-            "blocked": false,
-            "blockedAt": null,
-            "blockedBy": null,
-            "blockReason": null,
-            "currentPlanId": null,
-            "planExpiresAt": null,
-            "listingsUsed": 3,
-            "createdAt": "2025-12-23T10:01:54.700Z",
-            "updatedAt": "2026-01-02T05:05:22.214Z"
+            "renewsAt": "2026-01-30T12:15:43.486Z",
+            "status": "ACTIVE",
+            "updatedAt": "2025-12-30T12:15:43.492Z"
         }
     ]
 }

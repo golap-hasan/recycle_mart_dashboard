@@ -25,8 +25,9 @@ export const approveVendor = async (vendorId: string) => {
 
     if (result?.success) updateTag("VENDOR-LIST");
     return result;
-  } catch (error: any) {
-    return { success: false, message: error?.message };
+ } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to approve vendor";
+    return { success: false, message };
   }
 };
 
@@ -41,8 +42,9 @@ export const rejectVendor = async (vendorId: string, reason: string): Promise<an
 
     if (result?.success) updateTag("VENDOR-LIST");
     return result;
-  } catch (error: any) {
-    return { success: false, message: error?.message };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to reject vendor";
+    return { success: false, message };
   }
 };
 
@@ -56,8 +58,9 @@ export const blockVendor = async (vendorId: string, reason: string): Promise<any
 
     if (result?.success) updateTag("VENDOR-LIST");
     return result;
-  } catch (error: any) {
-    return { success: false, message: error?.message };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to block vendor";
+    return { success: false, message };
   }
 };
 
@@ -71,8 +74,9 @@ export const unblockVendor = async (vendorId: string, reason: string): Promise<a
 
     if (result?.success) updateTag("VENDOR-LIST");
     return result;
-  } catch (error: any) {
-    return { success: false, message: error?.message };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to unblock vendor";
+    return { success: false, message };
   }
 };
 
