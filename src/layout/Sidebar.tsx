@@ -13,7 +13,6 @@ import {
   Users,
   Megaphone,
   Layers,
-  MapPin,
   CreditCard,
   Headphones,
   Image,
@@ -24,6 +23,8 @@ import {
   LogOut,
   FileText,
   Shield,
+  Store,
+  Crown,
 } from "lucide-react";
 import { cn, SuccessToast, ErrorToast } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
@@ -50,11 +51,10 @@ const menuGroups: MenuGroup[] = [
     items: [
       { icon: LayoutDashboard, label: "Dashboard", href: "/" },
       { icon: Users, label: "User Management", href: "/users" },
-      { icon: Users, label: "Vendor Management", href: "/vendors" },
-      { icon: Users, label: "Subscriber Management", href: "/subscribers" },
+      { icon: Store, label: "Vendor Management", href: "/vendors" },
+      { icon: Crown, label: "Subscriber Management", href: "/subscribers" },
       { icon: Megaphone, label: "Ads Management", href: "/ads" },
       { icon: Layers, label: "Category & Subcategory", href: "/categories" },
-      { icon: MapPin, label: "Locations", href: "/locations" },
       { icon: CreditCard, label: "Packages / Plans", href: "/packages" },
     ],
   },
