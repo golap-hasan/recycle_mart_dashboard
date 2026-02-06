@@ -7,10 +7,12 @@ export const serverFetch = async (
   const accessToken = await getValidAccessTokenForServerActions();
   const { tags, revalidate, ...rest } = options;
 
+  const isFormData = rest.body instanceof FormData;
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}${endpoint}`, {
     ...rest,
     headers: {
-      "Content-Type": "application/json",
+      ...(!isFormData && { "Content-Type": "application/json" }),
       Authorization: `Bearer ${accessToken}`,
       ...rest.headers,
     },

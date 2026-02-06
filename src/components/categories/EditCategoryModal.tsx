@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -24,34 +23,51 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Plus, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
-import { createCategory } from "@/services/categories";
+import { updateCategory } from "@/services/categories";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
+import { Category } from "@/types/categories.type";
 
 const formSchema = z.object({
   name: z.string().min(2, "Category name must be at least 2 characters"),
   slug: z.string().min(2, "Slug must be at least 2 characters"),
   order: z.number(),
   isActive: z.boolean(),
-  icon: z.any().refine((file) => file instanceof File, "Icon is required"),
+  icon: z.any().optional(),
 });
 
-export function AddCategoryModal() {
-  const [open, setOpen] = useState(false);
+interface EditCategoryModalProps {
+  category: Category;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function EditCategoryModal({ category, open, onOpenChange }: EditCategoryModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [iconPreview, setIconPreview] = useState<string | null>(null);
+  const [iconPreview, setIconPreview] = useState<string | null>(category.icon);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      slug: "",
-      order: 1,
-      isActive: true,
-      icon: undefined,
+      name: category.name,
+      slug: category.slug,
+      order: category.order,
+      isActive: category.isActive,
     },
   });
+
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        name: category.name,
+        slug: category.slug,
+        order: category.order,
+        isActive: category.isActive,
+      });
+      setIconPreview(category.icon);
+    }
+  }, [open, category, form]);
 
   const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,16 +87,16 @@ export function AddCategoryModal() {
       const formData = new FormData();
       const { icon, ...rest } = values;
       formData.append("data", JSON.stringify(rest));
-      formData.append("icon", icon);
+      if (icon instanceof File) {
+        formData.append("icon", icon);
+      }
 
-      const res = await createCategory(formData);
+      const res = await updateCategory(category._id, formData);
       if (res.success) {
-        SuccessToast("Category created successfully!");
-        setOpen(false);
-        form.reset();
-        setIconPreview(null);
+        SuccessToast("Category updated successfully!");
+        onOpenChange(false);
       } else {
-        ErrorToast(res.message || "Failed to create category");
+        ErrorToast(res.message || "Failed to update category");
       }
     } catch {
       ErrorToast("Something went wrong");
@@ -90,18 +106,12 @@ export function AddCategoryModal() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" className="w-fit">
-          <Plus />
-          Add Category
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Category</DialogTitle>
+          <DialogTitle>Edit Category</DialogTitle>
           <DialogDescription>
-            Create a new category with icon.
+            Update category details and icon.
           </DialogDescription>
         </DialogHeader>
         
@@ -183,10 +193,10 @@ export function AddCategoryModal() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
+                    Updating...
                   </>
                 ) : (
-                  "Create Category"
+                  "Update Category"
                 )}
               </Button>
             </DialogFooter>
