@@ -3,92 +3,96 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, MoreVertical } from "lucide-react";
+import { Contact } from "@/types/support.type";
+import { format } from "date-fns";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-export interface Ticket {
-  id: string;
-  subject: string;
-  userName: string;
-  userEmail: string;
-  status: "Pending" | "Closed";
-  category: string;
-  createdDate: string;
-  assignedTo?: string;
-}
+const CellAction = ({ data }: { data: Contact }) => {
+  return (
+    <div className="text-right">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-8 w-8">
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem>
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Reply
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
 
-export const supportColumns: ColumnDef<Ticket>[] = [
+export const supportColumns: ColumnDef<Contact>[] = [
   {
     accessorKey: "subject",
     header: "Subject",
     cell: ({ row }) => (
-      <span className="font-medium max-w-[250px] truncate block">
-        {row.getValue("subject")}
-      </span>
+      <div className="flex flex-col gap-1 max-w-[300px]">
+        <span className="font-semibold text-primary">
+          {row.getValue("subject")}
+        </span>
+        <span className="text-xs text-muted-foreground line-clamp-2" title={row.original.message}>
+          {row.original.message}
+        </span>
+      </div>
     ),
   },
   {
-    accessorKey: "userName",
+    accessorKey: "name",
     header: "User",
     cell: ({ row }) => {
-      const ticket = row.original;
+      const contact = row.original;
       return (
         <div className="flex flex-col">
-          <span className="font-medium">{ticket.userName}</span>
+          <span className="font-medium">{contact.name}</span>
           <span className="text-xs text-muted-foreground">
-            {ticket.userEmail}
+            {contact.email}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {contact.phone}
           </span>
         </div>
       );
     },
   },
   {
-    accessorKey: "category",
-    header: "Category",
-    cell: ({ row }) => (
-      <Badge variant="outline" className="capitalize">
-        {row.getValue("category")}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "status",
+    accessorKey: "isReplied",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const isReplied = row.getValue("isReplied") as boolean;
       return (
         <Badge
-          variant={
-            status === "Closed"
-              ? "default"
-              : "secondary"
-          }
+          variant={isReplied ? "default" : "secondary"}
           className="capitalize"
         >
-          {status}
+          {isReplied ? "Replied" : "Pending"}
         </Badge>
       );
     },
   },
   {
-    accessorKey: "createdDate",
-    header: "Created",
+    accessorKey: "createdAt",
+    header: "Date",
     cell: ({ row }) => (
       <span className="text-muted-foreground text-sm">
-        {row.getValue("createdDate")}
+        {format(new Date(row.original.createdAt), "dd/MM/yyyy")}
       </span>
     ),
   },
   {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
-    cell: () => {
-      return (
-        <div className="text-right">
-          <Button variant="ghost" size="icon-sm">
-            <MessageSquare />
-          </Button>
-        </div>
-      );
-    },
+    cell: ({ row }) => <CellAction data={row.original} />,
   },
 ];
