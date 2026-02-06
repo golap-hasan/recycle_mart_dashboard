@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
 import { FieldValues } from 'react-hook-form';
 import { serverFetch } from '@/lib/fetcher';
+import { User } from '@/types/users.type';
 
 // signInUser (With Role Check)
 export const signInUser = async (userData: FieldValues): Promise<any> => {
@@ -16,7 +17,7 @@ export const signInUser = async (userData: FieldValues): Promise<any> => {
 
     if (result?.success) {
       const accessToken = result?.data?.accessToken;
-      const decodedData: any = jwtDecode(accessToken);
+      const decodedData: User = jwtDecode(accessToken);
 
       // ROLE CHECK
       if (decodedData?.role !== 'ADMIN' && decodedData?.role !== 'SUPER_ADMIN') {
@@ -46,7 +47,10 @@ export const updateProfilePhoto = async (data: FormData): Promise<any> => {
     });
 
     if (result?.success) {
-      (await cookies()).set('accessToken', result?.data?.accessToken);
+      const accessToken = result?.data?.accessToken;
+      if (accessToken) {
+        (await cookies()).set('accessToken', accessToken);
+      }
     }
 
     return result;
@@ -182,15 +186,18 @@ export const getNewAccessToken = async (refreshToken: string): Promise<any> => {
 };
 
 // updateUserData
-export const updateUserData = async (userData: FieldValues): Promise<any> => {
+export const updateUserData = async (data: { name?: string; phone?: string }): Promise<any> => {
   try {
     const result = await serverFetch('/user/update-user-data', {
       method: 'PATCH',
-      body: JSON.stringify(userData),
+      body: JSON.stringify(data),
     });
 
     if (result?.success) {
-      (await cookies()).set('accessToken', result?.data?.accessToken);
+      const accessToken = result?.data?.accessToken;
+      if (accessToken) {
+        (await cookies()).set('accessToken', accessToken);
+      }
     }
 
     return result;
@@ -200,7 +207,7 @@ export const updateUserData = async (userData: FieldValues): Promise<any> => {
 };
 
 // getCurrentUser
-export const getCurrentUser = async (): Promise<any> => {
+export const getCurrentUser = async (): Promise<User | null> => {
   const accessToken = (await cookies()).get('accessToken')?.value;
   if (accessToken) {
     return jwtDecode(accessToken);

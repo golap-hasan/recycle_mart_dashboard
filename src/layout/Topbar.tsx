@@ -21,8 +21,9 @@ import MobileSidebar from "./MobileSidebar";
 import ThemeToggle from "@/providers/ThemeToggle";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { logOut } from "@/services/auth";
+import { logOut, getCurrentUser } from "@/services/auth";
 import { SuccessToast, ErrorToast } from "@/lib/utils";
+import { User } from "@/types/users.type";
 
 interface TopbarProps {
   onToggleSidebar: () => void;
@@ -32,9 +33,15 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
+    const fetchUser = async () => {
+      const userData = await getCurrentUser();
+      setUser(userData);
+    };
+    fetchUser();
   }, []);
 
   if (!isMounted) {
@@ -79,9 +86,9 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full">
               <Avatar className="h-10 w-10">
-                <AvatarImage src="" alt="John Doe" />
+                <AvatarImage src={user?.image || ""} alt={user?.name || "User"} />
                 <AvatarFallback className="bg-muted text-muted-foreground">
-                  JD
+                  {user?.name?.split(' ').map((n: string) => n[0]).join('').toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -94,14 +101,14 @@ export default function Topbar({ onToggleSidebar }: TopbarProps) {
             {/* User Info Header */}
             <div className="flex items-center gap-3 p-3">
               <Avatar className="h-10 w-10">
-                <AvatarImage src="" alt="John Doe" />
+                <AvatarImage src={user?.image || ""} alt={user?.name || "User"} />
                 <AvatarFallback className="bg-muted text-muted-foreground">
-                  JD
+                  {user?.name?.split(' ').map((n: string) => n[0]).join('').toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <p className="text-sm font-medium text-foreground">John Doe</p>
-                <p className="text-xs text-muted-foreground">Admin</p>
+                <p className="text-sm font-medium text-foreground">{user?.name || "User"}</p>
+                <p className="text-xs text-muted-foreground capitalize">{user?.role?.replace('_', ' ').toLowerCase() || "Admin"}</p>
               </div>
             </div>
 

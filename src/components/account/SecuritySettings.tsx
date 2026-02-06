@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -15,7 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { changePassword } from "@/services/auth";
+import { ErrorToast, SuccessToast } from "@/lib/utils";
 
 const securityFormSchema = z.object({
   currentPassword: z.string().min(1, "Current password is required"),
@@ -42,12 +44,23 @@ export function SecuritySettings() {
 
   async function onSubmit(data: SecurityFormValues) {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data);
-    setIsLoading(false);
-    toast.success("Password updated successfully!");
-    form.reset();
+    try {
+      const res = await changePassword({
+        oldPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      });
+
+      if (res?.success) {
+        SuccessToast(res?.message || "Password updated successfully!");
+        form.reset();
+      } else {
+        ErrorToast(res?.message || "Failed to update password");
+      }
+    } catch (error: any) {
+      ErrorToast(error?.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,39 +15,56 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2, Lock } from "lucide-react";
-import { toast } from "sonner";
+import { ErrorToast, SuccessToast } from "@/lib/utils";
+import { getCurrentUser, updateUserData } from "@/services/auth";
 
 const profileFormSchema = z.object({
-  fullName: z.string().min(2, "Name must be at least 2 characters."),
+  name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Invalid email address."),
   phone: z.string().min(10, "Phone number must be at least 10 digits."),
-  address: z.string().min(5, "Address must be at least 5 characters."),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
-
-const defaultValues: ProfileFormValues = {
-  fullName: "John Doe",
-  email: "john.doe@example.com",
-  phone: "+880 1712 345678",
-  address: "123 Main St, Dhaka, Bangladesh",
-};
 
 export function ProfileForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+    },
   });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getCurrentUser();
+      if (user) {
+        form.reset({
+          name: user.name,
+          email: user.email,
+          phone: user.phone || "",
+        });
+      }
+    };
+    fetchUser();
+  }, [form]);
 
   async function onSubmit(data: ProfileFormValues) {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data);
+    const res = await updateUserData({
+      name: data.name,
+      phone: data.phone,
+    });
+
+    if (res.success) {
+      SuccessToast("Profile updated successfully!");
+    } else {
+      ErrorToast(res.message || "Failed to update profile");
+    }
     setIsLoading(false);
-    toast.success("Profile updated successfully!");
   }
 
   return (
@@ -64,7 +81,7 @@ export function ProfileForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
-              name="fullName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
@@ -108,24 +125,11 @@ export function ProfileForm() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your address" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
 
           <div className="flex justify-end">
             <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="animate-spin" />}
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Update Profile
             </Button>
           </div>
