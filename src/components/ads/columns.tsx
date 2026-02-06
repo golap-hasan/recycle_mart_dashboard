@@ -10,21 +10,79 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Trash2, CheckCircle, XCircle, Star } from "lucide-react";
+import { MoreVertical, Trash2, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import AdDetailsDialog from "./AdDetailsDialog";
+import { Ad } from "@/types/ads.type";
+import { approveAd, deleteAd } from "@/services/ads";
+import { toast } from "sonner";
+import { useState } from "react";
+import { RejectAdModal } from "./RejectAdModal";
 
-export interface Ad {
-  id: string;
-  title: string;
-  seller: string;
-  category: string;
-  location: string;
-  price: number;
-  condition: "New" | "Used" | "Refurbished";
-  status: "pending" | "approved" | "rejected" | "expired";
-  postedDate: string;
-  views: number;
-}
+const ActionCell = ({ ad }: { ad: Ad }) => {
+  const [loading, setLoading] = useState<string | null>(null);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+
+  const handleApprove = async () => {
+    setLoading("approve");
+    const res = await approveAd(ad._id);
+    if (res.success) {
+      toast.success("Ad approved successfully");
+    } else {
+      toast.error(res.message || "Failed to approve ad");
+    }
+    setLoading(null);
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this ad?")) return;
+    setLoading("delete");
+    const res = await deleteAd(ad._id);
+    if (res.success) {
+      toast.success("Ad deleted successfully");
+    } else {
+      toast.error(res.message || "Failed to delete ad");
+    }
+    setLoading(null);
+  };
+
+  return (
+    <div className="text-right">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-8 w-8" disabled={!!loading}>
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreVertical className="h-4 w-4" />}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <AdDetailsDialog ad={ad} />
+          {ad.status === "PENDING" && (
+            <>
+              <DropdownMenuItem onClick={handleApprove}>
+                <CheckCircle className="mr-2 h-4 w-4" />
+                Approve Ad
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive" onClick={() => setIsRejectModalOpen(true)}>
+                <XCircle className="mr-2 h-4 w-4" />
+                Reject Ad
+              </DropdownMenuItem>
+            </>
+          )}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="text-destructive" onClick={handleDelete}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete Ad
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <RejectAdModal
+        adId={ad._id}
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+      />
+    </div>
+  );
+};
 
 export const adsColumns: ColumnDef<Ad>[] = [
   {
@@ -32,23 +90,23 @@ export const adsColumns: ColumnDef<Ad>[] = [
     header: "Ad Title",
     cell: ({ row }) => (
       <span className="font-medium max-w-[300px] truncate block">
-        {row.getValue("title")}
+        {row.original.title}
       </span>
     ),
   },
   {
-    accessorKey: "seller",
+    accessorKey: "user.name",
     header: "Seller",
     cell: ({ row }) => (
-      <span className="text-muted-foreground">{row.getValue("seller")}</span>
+      <span className="text-muted-foreground">{row.original.user.name}</span>
     ),
   },
   {
-    accessorKey: "category",
+    accessorKey: "categoryId.name",
     header: "Category",
     cell: ({ row }) => (
       <Badge variant="outline" className="capitalize">
-        {row.getValue("category")}
+        {row.original.categoryId?.name || "N/A"}
       </Badge>
     ),
   },
@@ -56,7 +114,7 @@ export const adsColumns: ColumnDef<Ad>[] = [
     accessorKey: "price",
     header: "Price",
     cell: ({ row }) => {
-      const price = row.getValue("price") as number;
+      const price = row.original.price;
       return (
         <span className="font-semibold">
           ৳ {price.toLocaleString("en-BD")}
@@ -68,11 +126,9 @@ export const adsColumns: ColumnDef<Ad>[] = [
     accessorKey: "condition",
     header: "Condition",
     cell: ({ row }) => {
-      const condition = row.getValue("condition") as string;
+      const condition = row.original.condition;
       return (
-        <Badge
-           onClick={() => {}}className="capitalize"
-        >
+        <Badge className="capitalize">
           {condition}
         </Badge>
       );
@@ -82,15 +138,15 @@ export const adsColumns: ColumnDef<Ad>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const status = row.original.status;
       return (
         <Badge
           variant={
-            status === "approved"
+            status === "ACTIVE"
               ? "default"
-              : status === "pending"
+              : status === "PENDING"
               ? "outline"
-              : status === "rejected"
+              : status === "REJECTED"
               ? "destructive"
               : "secondary"
           }
@@ -101,54 +157,9 @@ export const adsColumns: ColumnDef<Ad>[] = [
       );
     },
   },
-  // {
-  //   accessorKey: "views",
-  //   header: "Views",
-  //   cell: ({ row }) => (
-  //     <span className="text-muted-foreground">
-  //       {row.getValue("views")} views
-  //     </span>
-  //   ),
-  // },
   {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
-    cell: ({ row }) => (
-      <div className="text-right">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreVertical/>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <AdDetailsDialog ad={row.original} />
-            </DropdownMenuItem>
-            {row.original.status === "pending" && (
-              <>
-                <DropdownMenuItem>
-                  <CheckCircle />
-                  Approve Ad
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <XCircle />
-                  Reject Ad
-                </DropdownMenuItem>
-              </>
-            )}
-            <DropdownMenuItem>
-              <Star  />
-              Feature Ad
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
-              <Trash2 />
-              Delete Ad
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    ),
+    cell: ({ row }) => <ActionCell ad={row.original} />,
   },
 ];
