@@ -1,3 +1,4 @@
+ 
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -12,14 +13,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn, ErrorToast, SuccessToast } from "@/lib/utils";
-import { CalendarIcon, Upload, Loader2 } from "lucide-react";
+import { CalendarIcon, Loader2, Upload } from "lucide-react";
 import { format } from "date-fns";
-import { createLottery } from "@/services/lottery";
+import { updateLottery } from "@/services/lottery";
+import { Lottery } from "@/types/lottery.type";
 
-export function CreateLotteryForm() {
-  const [date, setDate] = useState<Date>();
-  const [image, setImage] = useState<string | null>(null);
+interface UpdateLotteryFormProps {
+  lottery: Lottery;
+  onSuccess?: () => void;
+}
+
+export function UpdateLotteryForm({ lottery, onSuccess }: UpdateLotteryFormProps) {
+  const [date, setDate] = useState<Date | undefined>(lottery.drawDate ? new Date(lottery.drawDate) : undefined);
+  const [image, setImage] = useState<string | null>(lottery.image);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,15 +58,16 @@ export function CreateLotteryForm() {
     }
 
     setIsLoading(true);
+    const form = e.currentTarget;
     const formData = new FormData();
     
-    const form = e.currentTarget;
     const data = {
       title: (form.elements.namedItem("title") as HTMLInputElement).value,
       description: (form.elements.namedItem("description") as HTMLTextAreaElement).value,
       drawDate: date.toISOString(),
       ticketPrice: Number((form.elements.namedItem("ticketPrice") as HTMLInputElement).value),
       prize: (form.elements.namedItem("prize") as HTMLInputElement).value,
+      status: (form.elements.namedItem("status") as HTMLSelectElement)?.value || lottery.status,
     };
 
     formData.append("data", JSON.stringify(data));
@@ -60,16 +75,13 @@ export function CreateLotteryForm() {
       formData.append("lotteryImage", imageFile);
     }
 
-    const res = await createLottery(formData);
+    const res = await updateLottery(lottery._id, formData);
     
     if (res.success) {
-      SuccessToast("Lottery created successfully!");
-      form.reset();
-      setImage(null);
-      setImageFile(null);
-      setDate(undefined);
+      SuccessToast("Lottery updated successfully!");
+      onSuccess?.();
     } else {
-      ErrorToast(res.message || "Failed to create lottery");
+      ErrorToast(res.message || "Failed to update lottery");
     }
     
     setIsLoading(false);
@@ -80,18 +92,18 @@ export function CreateLotteryForm() {
       <div className="space-y-6 p-4">
         <div className="space-y-2">
           <Label htmlFor="title">Lottery Title</Label>
-          <Input id="title" name="title" placeholder="e.g., Weekly Jackpot" required />
+          <Input id="title" name="title" defaultValue={lottery.title} required />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="description">Description</Label>
-          <Textarea id="description" name="description" placeholder="Lottery description..." required />
+          <Textarea id="description" name="description" defaultValue={lottery.description} required />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="ticketPrice">Ticket Price (BDT)</Label>
-            <Input id="ticketPrice" name="ticketPrice" type="number" placeholder="100" required />
+            <Input id="ticketPrice" name="ticketPrice" type="number" defaultValue={lottery.ticketPrice} required />
           </div>
           <div className="space-y-2">
             <Label>Draw Date</Label>
@@ -121,8 +133,22 @@ export function CreateLotteryForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="prize">Prize Name</Label>
-          <Input id="prize" name="prize" placeholder="e.g., iPhone 15 Pro Max" required />
+          <Label htmlFor="status">Status</Label>
+          <Select name="status" defaultValue={lottery.status}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ACTIVE">Active</SelectItem>
+              <SelectItem value="INACTIVE">Inactive</SelectItem>
+              <SelectItem value="COMPLETED">Completed</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="prize">Prize Details</Label>
+          <Input id="prize" name="prize" defaultValue={lottery.prize || ""} placeholder="e.g., 10 Lakh Taka" required />
         </div>
 
         <div className="space-y-2">
@@ -169,18 +195,10 @@ export function CreateLotteryForm() {
             />
           </div>
         </div>
-      </div>
 
-      <div className="flex justify-end gap-3 px-4 pb-4">
-        <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating...
-            </>
-          ) : (
-            "Create Lottery"
-          )}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Update Lottery
         </Button>
       </div>
     </form>

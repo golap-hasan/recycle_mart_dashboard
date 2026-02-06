@@ -2,24 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreVertical, Trash2, Eye, Trophy } from "lucide-react";
-
-export interface Lottery {
-  id: string;
-  title: string;
-  drawDate: string;
-  participants: number;
-  status: "active" | "inactive" | "completed";
-  prize: string;
-  image?: string;
-}
+import { LotteryActions } from "./LotteryActions";
+import { format } from "date-fns";
+import { Lottery } from "@/types/lottery.type";
 
 export const lotteryColumns: ColumnDef<Lottery>[] = [
   {
@@ -28,22 +13,34 @@ export const lotteryColumns: ColumnDef<Lottery>[] = [
     cell: ({ row }) => (
       <div className="flex flex-col">
         <span className="font-medium">{row.getValue("title")}</span>
-        <span className="text-xs text-muted-foreground">{row.original.prize}</span>
+        <span className="text-xs text-muted-foreground">{row.original.prize || "No Prize Info"}</span>
       </div>
     ),
   },
   {
     accessorKey: "drawDate",
     header: "Draw Date",
+    cell: ({ row }) => {
+      const date = row.getValue("drawDate");
+      return (
+        <span className="text-muted-foreground">
+          {date ? format(new Date(date as string), "dd/MM/yyyy") : "N/A"}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "ticketPrice",
+    header: "Ticket Price",
     cell: ({ row }) => (
-      <span className="text-muted-foreground">{row.getValue("drawDate")}</span>
+      <span className="font-medium">{row.getValue("ticketPrice")} BDT</span>
     ),
   },
   {
-    accessorKey: "participants",
-    header: "Total Participants",
+    accessorKey: "participantsCount",
+    header: "Participants",
     cell: ({ row }) => (
-      <span className="font-medium">{row.getValue("participants")}</span>
+      <span className="font-medium">{row.getValue("participantsCount")}</span>
     ),
   },
   {
@@ -54,15 +51,15 @@ export const lotteryColumns: ColumnDef<Lottery>[] = [
       return (
         <Badge
           variant={
-            status === "active"
+            status === "ACTIVE"
               ? "default"
-              : status === "completed"
+              : status === "COMPLETED"
               ? "secondary"
               : "outline"
           }
           className="capitalize"
         >
-          {status}
+          {status.toLowerCase()}
         </Badge>
       );
     },
@@ -73,32 +70,8 @@ export const lotteryColumns: ColumnDef<Lottery>[] = [
     meta: {
       headerClassName: "text-right",
     },
-    cell: () => {
-      return (
-        <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Eye className="mr-2 h-4 w-4" />
-                View Details
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Trophy className="mr-2 h-4 w-4" />
-                Pick Winner
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
+    cell: ({ row }) => {
+      return <LotteryActions lottery={row.original} />;
     },
   },
 ];

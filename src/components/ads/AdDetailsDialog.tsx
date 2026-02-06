@@ -15,6 +15,7 @@ import { Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Ad } from "@/types/ads.type";
 import Image from "next/image";
+import { format } from "date-fns";
 
 const AdDetailsDialog = ({ ad }: { ad: Ad }) => {
   return (
@@ -88,7 +89,7 @@ const AdDetailsDialog = ({ ad }: { ad: Ad }) => {
             </div>
             <div>
               <span className="font-semibold block text-muted-foreground mb-1">Created At</span>
-              <p className="text-base">{new Date(ad.createdAt).toLocaleDateString()}</p>
+              <p className="text-base">{format(new Date(ad.createdAt), "dd/MM/yyyy")}</p>
             </div>
             <div>
               <span className="font-semibold block text-muted-foreground mb-1">Views</span>
