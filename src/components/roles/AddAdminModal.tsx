@@ -38,7 +38,7 @@ const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  role: z.enum(["ADMIN", "SUPER_ADMIN"]),
+  role: z.string(),
 });
 
 export function AddAdminModal() {
@@ -150,7 +150,6 @@ export function AddAdminModal() {
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="ADMIN">Admin</SelectItem>
-                      <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

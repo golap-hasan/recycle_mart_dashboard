@@ -22,6 +22,9 @@ export const serverFetch = async (
     },
   });
 
-  if (!res.ok) throw new Error(`Fetch failed: ${res.statusText}`);
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || `Fetch failed: ${res.statusText}`);
+  }
   return res.json();
 };

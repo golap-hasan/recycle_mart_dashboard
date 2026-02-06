@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 "use server";
 
 import { buildQueryString } from "@/lib/buildQueryString";
@@ -27,8 +27,8 @@ export const createAdmin = async (data: any) => {
     });
     if (res.success) updateTag("ADMIN-LIST");
     return res;
-  } catch (error) {
-    return { success: false, message: "Failed to create admin" };
+  } catch (error: any) {
+    return { success: false, message: error?.message || "Failed to create admin" };
   }
 };
 
@@ -41,8 +41,8 @@ export const updateAdmin = async (id: string, data: any) => {
     });
     if (res.success) updateTag("ADMIN-LIST");
     return res;
-  } catch (error) {
-    return { success: false, message: "Failed to update admin" };
+  } catch (error: any) {
+    return { success: false, message: error?.message || "Failed to update admin" };
   }
 };
 
@@ -54,7 +54,7 @@ export const deleteAdmin = async (id: string) => {
     });
     if (res.success) updateTag("ADMIN-LIST");
     return res;
-  } catch (error) {
-    return { success: false, message: "Failed to delete admin" };
+  } catch (error: any) {
+    return { success: false, message: error?.message || "Failed to delete admin" };
   }
 };
