@@ -44,9 +44,10 @@ export const updateLottery = async (id: string, formData: FormData) => {
   }
 };
 
-export const runLotteryDraw = async (id: string) => {
+export const runLotteryDraw = async (id: string, winningToken?: string) => {
   try {
-    const res = await serverFetch(`/lottery/${id}/draw`, {
+    const query = winningToken ? `?winningToken=${winningToken}` : "";
+    const res = await serverFetch(`/lottery/${id}/draw${query}`, {
       method: "POST",
     });
     if (res.success) updateTag("LOTTERY-LIST");
