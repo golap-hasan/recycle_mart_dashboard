@@ -46,7 +46,6 @@ export default function LoginForm() {
   })
 
   async function onSubmit(data: LoginFormValues) {
-    console.log(data)
     setIsLoading(true)
     try {
       const result = await signInUser(data)

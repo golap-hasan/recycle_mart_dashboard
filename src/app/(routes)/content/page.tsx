@@ -1,14 +1,20 @@
 import PageHeader from "@/components/ui/page-header";
+import { ContentManager } from "@/components/content/ContentManager";
+import { getExtraData } from "@/services/extra-data";
 
 export default async function ContentPage() {
+  const res = await getExtraData();
+  const initialData = res?.success ? res.data : {};
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Content Management"
-        description="Manage homepage banners, footer links, and other static content."
+        description="Manage homepage carousel banners and advertisement sections."
       />
-      <div className="p-4 rounded-lg border border-border bg-card text-card-foreground shadow-sm">
-        <p>Manage homepage banners, footer links, and other static content.</p>
+      
+      <div className="container mx-auto">
+        <ContentManager initialData={initialData} />
       </div>
     </div>
   );

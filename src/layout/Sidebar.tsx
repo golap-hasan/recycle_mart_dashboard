@@ -15,7 +15,7 @@ import {
   Layers,
   CreditCard,
   Headphones,
-  // Image,
+  Image,
   ShieldAlert,
   Ticket,
   ChevronRight,
@@ -62,7 +62,7 @@ const menuGroups: MenuGroup[] = [
     title: "System Configuration",
     items: [
       { icon: Headphones, label: "Support Management", href: "/support" },
-      // { icon: Image, label: "Content Management", href: "/content" },
+      { icon: Image, label: "Content Management", href: "/content" },
       { icon: ShieldAlert, label: "Admin & Roles", href: "/roles" },
       { icon: Ticket, label: "Lottery Management", href: "/lottery" },
     ],
