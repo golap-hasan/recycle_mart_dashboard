@@ -32,6 +32,7 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 const formSchema = z.object({
   name: z.string().min(1, "Package name is required"),
   price: z.number().min(0, "Price must be a positive number"),
+  adsLimit: z.number().min(1, "Ads limit must be at least 1"),
   features: z.array(z.string().min(1, "Feature cannot be empty")).min(1, "At least one feature is required"),
 });
 
@@ -49,6 +50,7 @@ export function UpdatePackageModal({ plan }: UpdatePackageModalProps) {
     defaultValues: {
       name: "",
       price: 0,
+      adsLimit: 1,
       features: [],
     },
   });
@@ -63,6 +65,7 @@ export function UpdatePackageModal({ plan }: UpdatePackageModalProps) {
       form.reset({
         name: plan.name,
         price: plan.price,
+        adsLimit: plan.adsLimit,
       });
       replace(plan.features); // Populate field array
     }
@@ -129,6 +132,25 @@ export function UpdatePackageModal({ plan }: UpdatePackageModalProps) {
                     <Input
                       type="number"
                       placeholder="0"
+                      value={field.value}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="adsLimit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ads Limit</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="10"
                       value={field.value}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
