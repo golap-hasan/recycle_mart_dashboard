@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -34,14 +35,14 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { MoreHorizontal, Check, X, Ban, LockOpen, Loader2 } from "lucide-react";
+import { MoreHorizontal, Check, X, Ban, LockOpen, Loader2, Eye, MapPin, Calendar, FileText, User, Phone, Mail } from "lucide-react";
 import { formatDate, SuccessToast, ErrorToast } from "@/lib/utils";
 import { Vendor } from "@/types/vendors.type";
 import { approveVendor, rejectVendor, blockVendor, unblockVendor } from "@/services/vendors";
 
 const VendorActions = ({ vendor }: { vendor: Vendor }) => {
   const [loading, setLoading] = useState(false);
-  const [action, setAction] = useState<"approve" | "reject" | "block" | "unblock" | null>(null);
+  const [action, setAction] = useState<"approve" | "reject" | "block" | "unblock" | "view" | null>(null);
   const [reason, setReason] = useState("");
 
   const isOpen = (currentAction: typeof action) => action === currentAction;
@@ -101,6 +102,9 @@ const VendorActions = ({ vendor }: { vendor: Vendor }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setAction("view")}>
+            <Eye className="h-4 w-4 text-blue-500" /> View Details
+          </DropdownMenuItem>
           {vendor.status === "PENDING" && (
             <>
               <DropdownMenuItem onClick={() => setAction("approve")}>
@@ -123,6 +127,133 @@ const VendorActions = ({ vendor }: { vendor: Vendor }) => {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Vendor Details Dialog */}
+      <Dialog open={isOpen("view")} onOpenChange={(open) => !open && resetState()}>
+        <DialogContent className="max-w-2xl overflow-hidden p-0">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+              <User className="h-6 w-6 text-primary" />
+              Vendor Details
+            </DialogTitle>
+            <DialogDescription>
+              Comprehensive information about {vendor.storeName}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
+            {/* Store Banner/Image */}
+            <div className="relative h-48 w-full rounded-lg overflow-hidden bg-muted group">
+              {vendor.storeImage ? (
+                <Image 
+                  src={vendor.storeImage} 
+                  alt={vendor.storeName}
+                  fill
+                  className="object-contain transition-transform duration-500 group-hover:scale-110"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-primary/5">
+                  <span className="text-4xl font-bold text-primary/20">
+                    {vendor.storeName.charAt(0)}
+                  </span>
+                </div>
+              )}
+              <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+              <div className="absolute bottom-4 left-4 flex flex-col gap-1">
+                <h4 className="text-white font-bold text-xl">{vendor.storeName}</h4>
+                <Badge className="w-fit bg-primary hover:bg-primary text-white border-none px-3 py-0.5">
+                  {vendor.status}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Store Info */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg border-b pb-1">Store Information</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Name:</span> {vendor.storeName}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Location:</span> {vendor.storeLocation}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Trade License:</span> {vendor.tradeLicenseNumber}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Joined:</span> {formatDate(vendor.createdAt)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Owner Info */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg border-b pb-1">Owner Information</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Name:</span> {vendor.user.name}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Email:</span> {vendor.user.email}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Phone className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Phone:</span> {vendor.user.phone}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Verification Documents */}
+            <div className="space-y-4 pt-2">
+              <h3 className="font-semibold text-lg border-b pb-1">Verification Documents</h3>
+              <div className="p-4 border rounded-lg bg-muted/30 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded bg-primary/10 flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Trade License Document</p>
+                    <p className="text-xs text-muted-foreground">Verification document provided by vendor</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm" asChild>
+                  <a href={vendor.tradeLicense} target="_blank" rel="noopener noreferrer">View Document</a>
+                </Button>
+              </div>
+            </div>
+
+            {/* Block Info if applicable */}
+            {vendor.blocked && (
+              <div className="p-4 border border-destructive/50 rounded-lg bg-destructive/5 space-y-2">
+                <div className="flex items-center gap-2 text-destructive font-semibold">
+                  <Ban className="h-4 w-4" />
+                  Blocked Information
+                </div>
+                <p className="text-sm text-destructive/80">
+                  <span className="font-medium">Reason:</span> {vendor.blockReason || "No reason provided"}
+                </p>
+                {vendor.blockedAt && (
+                  <p className="text-xs text-destructive/60">
+                    Blocked on {formatDate(vendor.blockedAt)}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="p-6 pt-2">
+            <Button onClick={resetState}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Approve Confirmation */}
       <AlertDialog open={isOpen("approve")} onOpenChange={(open) => !open && resetState()}>
