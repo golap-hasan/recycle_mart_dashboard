@@ -13,3 +13,13 @@ export const getAllUsers = async (query: Record<string, string | string[] | unde
     return { success: false, data: [], meta: { total: 0, page: 1, limit: 10, totalPages: 0 } };
   }
 };
+
+export const toggleUserBlock = async (id: string) => {
+  try {
+    return await serverFetch(`/admin/users/${id}/toggle-block`, {
+      method: "PATCH",
+    });
+  } catch {
+    return { success: false, message: "Something went wrong" };
+  }
+};

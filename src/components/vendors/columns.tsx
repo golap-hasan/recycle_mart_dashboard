@@ -362,6 +362,13 @@ export const vendorsColumns: ColumnDef<Vendor>[] = [
     },
   },
   {
+    accessorKey: "user.phone",
+    header: "Phone",
+    cell: ({ row }) => (
+      <span className="text-muted-foreground">{row.original.user.phone || "N/A"}</span>
+    ),
+  },
+  {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {

@@ -17,7 +17,7 @@ export default function CardsGrid({ stats }: CardsGridProps) {
     { icon: Users, title: "Total Users", value: stats.totalUsers.toLocaleString() },
     { icon: Store, title: "Total Vendors", value: stats.totalVendors.toLocaleString() },
     { icon: Package, title: "Total Ads", value: stats.totalAds.toLocaleString() },
-    { icon: DollarSign, title: "Total Sales", value: `$${stats.totalSales.toLocaleString()}` },
+    { icon: DollarSign, title: "Total Sales", value: `৳ ${stats.totalSales.toLocaleString("en-BD")}` },
   ];
 
   return (
