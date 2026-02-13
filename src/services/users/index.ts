@@ -2,6 +2,7 @@
 
 import { buildQueryString } from "@/lib/buildQueryString";
 import { serverFetch } from "@/lib/fetcher";
+import { updateTag } from "next/cache";
 
 export const getAllUsers = async (query: Record<string, string | string[] | undefined> = {}) => {
   try {
@@ -16,9 +17,13 @@ export const getAllUsers = async (query: Record<string, string | string[] | unde
 
 export const toggleUserBlock = async (id: string) => {
   try {
-    return await serverFetch(`/admin/users/${id}/toggle-block`, {
+    const res = await serverFetch(`/admin/users/${id}/toggle-block`, {
       method: "PATCH",
     });
+    if (res.success) {
+      updateTag("USER-LIST");
+    }
+    return res;
   } catch {
     return { success: false, message: "Something went wrong" };
   }

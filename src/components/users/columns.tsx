@@ -7,16 +7,8 @@ import { formatDate, getInitials, SuccessToast, ErrorToast } from "@/lib/utils";
 import { User } from "@/types/users.type";
 import { useState } from "react";
 import { toggleUserBlock } from "@/services/users";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Ban, LockOpen, Loader2 } from "lucide-react";
+import { Ban, LockOpen, Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,28 +43,18 @@ const UserActions = ({ user }: { user: User }) => {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem 
-            onClick={() => setIsAlertOpen(true)}
-            className={user.isActive ? "text-destructive" : "text-blue-600"}
-          >
-            {user.isActive ? (
-              <><Ban className="mr-2 h-4 w-4" /> Block User</>
-            ) : (
-              <><LockOpen className="mr-2 h-4 w-4" /> Unblock User</>
-            )}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => setIsAlertOpen(true)}
+        className={user.isActive ? "text-destructive hover:text-destructive hover:bg-destructive/10" : "text-blue-600 hover:text-blue-700 hover:bg-blue-50"}
+      >
+        {user.isActive ? (
+          <><Ban /> Block</>
+        ) : (
+          <><LockOpen /> Unblock</>
+        )}
+      </Button>
 
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
@@ -97,7 +79,7 @@ const UserActions = ({ user }: { user: User }) => {
               disabled={loading}
               className={user.isActive ? "bg-destructive hover:bg-destructive/90" : "bg-blue-600 hover:bg-blue-700"}
             >
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading && <Loader2 className="animate-spin" />}
               Confirm
             </AlertDialogAction>
           </AlertDialogFooter>
