@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, Package, DollarSign, Store } from "lucide-react";
+import { Users, Package, Banknote, Store } from "lucide-react";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 
 interface CardsGridProps {
@@ -17,7 +17,7 @@ export default function CardsGrid({ stats }: CardsGridProps) {
     { icon: Users, title: "Total Users", value: stats.totalUsers.toLocaleString() },
     { icon: Store, title: "Total Vendors", value: stats.totalVendors.toLocaleString() },
     { icon: Package, title: "Total Ads", value: stats.totalAds.toLocaleString() },
-    { icon: DollarSign, title: "Total Sales", value: `৳ ${stats.totalSales.toLocaleString("en-BD")}` },
+    { icon: Banknote, title: "Total Sales", value: `৳ ${stats.totalSales.toLocaleString("en-BD")}` },
   ];
 
   return (
